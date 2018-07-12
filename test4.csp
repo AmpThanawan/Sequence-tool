@@ -1,5 +1,5 @@
 Channel s_a, r_a , s_b, r_b, s_c, r_c, s_d, r_d
-Channel f1_b, f1_b, f1_alt1, f1_alt2, 
+Channel f1_b, f1_e, f1_alt1 , f1_alt2 
                   
 M1 = s_a->f1_b->f1_e->s_d->SKIP
 M2 = r_a->f1_b->f1_e->r_d->SKIP

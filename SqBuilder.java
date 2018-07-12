@@ -47,14 +47,29 @@ public class SqBuilder {
 	private static String zu = new String("");    
     private static String err = new String("");
 	public static String life = new String("");
+
 	public static String channel = new String("Channel"+" ");
 	public static String channelMessage = new String("");
 	private static List<String> channelMessageList = new ArrayList<String>();
+
 	public static String channelFrame = new String("");
 	private static List<String> channelFrameList = new ArrayList<String>();
-	private static String[] errmsg = new String[1024];
-	private static int erridx = 0;
+
 	private static int numFrame = 0;
+
+	private static boolean state = true;
+
+	
+
+	private static int erridx = 0;
+	private static String[] errmsg = new String[1024];
+
+
+	private static List<String> lfLineList = new ArrayList<String>();
+	private static String lfLine = new String("");
+
+	private static String emptyln = new String("      ");
+	private static List<String> emptylnList = new ArrayList<String>();
 	
 	private static int Ssequenceidx = 0;
 	private static String[] SequenceZuname = new String[1000];      
@@ -176,6 +191,11 @@ public class SqBuilder {
         prjAccessor.close();
 		contents.add(channelMessageList);
 		contents.add(channelFrameList);
+		emptylnList.add(emptyln);
+		emptylnList.add(emptyln);
+		emptylnList.add(emptyln);
+		contents.add(emptylnList);
+		contents.add(lfLineList);
         return contents;
 	}
 	
@@ -267,10 +287,15 @@ public class SqBuilder {
 		ILifeline[] lifelines = interaction.getLifelines();
 		boolean first = true;
 		for (ILifeline lifeline : lifelines) {
+			lfLine = lifeline.toString() ;
+			lfLineList.add(lfLine);
+			lfLine = " = ";
+			lfLineList.add(lfLine);
 			if (!first)
 				showMiniSeparator();
 			showLifeline(lifeline);
 			first = false;
+			
 		}
 		System.out.println("Lifeline end.");
 	}
@@ -306,7 +331,6 @@ public class SqBuilder {
 		showMiniSeparator();
 		
 		System.out.println("Fragment start.");
-		
 		INamedElement[] fragments = lifeline.getFragments();
 		for (INamedElement fragment : fragments) {
 			if (fragment instanceof ICombinedFragment) {
@@ -314,7 +338,8 @@ public class SqBuilder {
 				showMiniSeparator();
 				showCombinedFragment(combinedFragment);
 				showMiniSeparator();
-	
+				lfLine = "->f1_b->f1_e->";
+				lfLineList.add(lfLine);
 				continue;
 			}
 			
@@ -323,9 +348,21 @@ public class SqBuilder {
 				continue;
 			}
 			System.out.println(fragment);
+
+			if(state == true){
+				lfLine = "s_"+fragment.toString() ;
+				lfLineList.add(lfLine);
+			}else{
+				lfLine = "r_"+fragment.toString() ;
+				lfLineList.add(lfLine);
+			}
+			
 		}
 		System.out.println("Fragment end.");
+		lfLine = "->SKIP"+System.lineSeparator();
+		lfLineList.add(lfLine);
 		
+		state = false ;
 		showMiniSeparator();
 	}
 	
@@ -426,17 +463,24 @@ public class SqBuilder {
 		channelMessageList.add(channel);
 		for (IMessage message : messages) {
 			
-			if (!first)
+			if (!first){
 				showMiniSeparator();
+				channelMessage = ", s"+ "_" + message.toString() ;
+				channelMessageList.add(channelMessage);
+				channelMessage = ", " + "r"+ "_" + message.toString() ;
+				channelMessageList.add(channelMessage);
+			}else{
+				channelMessage = "s"+ "_" + message.toString() ;
+				channelMessageList.add(channelMessage);
+				channelMessage = ", " + "r"+ "_" + message.toString()+" " ;
+				channelMessageList.add(channelMessage);
+			}
 
 			sequenceZuname[sequenceidx ] = zu;
 			sequenceZutype[sequenceidx ] = "Sequence Diagram";
 			showMessage(message,interaction);
 
-				channelMessage = "s"+ "_" + message.toString()+"," ;
-				channelMessageList.add(channelMessage);
-				channelMessage = " " + "r"+ "_" + message.toString()+","+" " ;
-				channelMessageList.add(channelMessage);
+			
 			
 				
 			
@@ -557,10 +601,22 @@ public class SqBuilder {
 	private static void showIncludeMessages(IPresentation[] presentations,
 			INodePresentation combinedFragmentPresentation) {
 		numFrame++;
-		channelFrame = "f"+ numFrame+"_b, ";
+
+		boolean checkfst = true ;
+
+		if(checkfst == true){
+			channelFrame = "f"+ numFrame+"_b, ";
+			channelFrameList.add(channelFrame);
+			channelFrame = "f"+ numFrame+"_e";
+			channelFrameList.add(channelFrame);
+		}else{
+
+		channelFrame = ", f"+ numFrame+"_b, ";
 		channelFrameList.add(channelFrame);
-		channelFrame = "f"+ numFrame+"_b, ";
+		channelFrame = "f"+ numFrame+"_e ";
 		channelFrameList.add(channelFrame);
+		}
+
 		int count = 0 ;
 		Rectangle2D combinedFragmentRectangle = combinedFragmentPresentation.getRectangle();
 		for (IPresentation presentation : presentations) {
@@ -570,8 +626,10 @@ public class SqBuilder {
 				if(containsTheMessage(combinedFragmentRectangle, messagePoints)){
 					System.out.println("includes message : " + messagePresentation.getLabel());
 					count++;
-					channelFrame = "f"+numFrame+"_"+"alt"+ count + ", " ;
+					
+					channelFrame = ", f"+numFrame+"_"+"alt"+ count ;
 					channelFrameList.add(channelFrame);
+					
 
 				}
 			}
