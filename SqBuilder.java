@@ -48,30 +48,73 @@ public class SqBuilder {
     private static String err = new String("");
 	public static String life = new String("");
 
-	public static String channel = new String("Channel"+" ");
+    // Channel
+	public static String channel = new String("channel"+" ");
 	public static String channelMessage = new String("");
 	private static List<String> channelMessageList = new ArrayList<String>();
 
-	public static String channelFrame = new String("");
+    // Channel Frame
+    public static String channelFrame = new String("");
 	private static List<String> channelFrameList = new ArrayList<String>();
-
 	private static int numFrame = 0;
 
+    // state s or r
 	private static boolean state = true;
 
-	
+    private static int count = 0 ;
 
 	private static int erridx = 0;
 	private static String[] errmsg = new String[1024];
 
-
+    //lifeline outside frame
 	private static List<String> lfLineList = new ArrayList<String>();
 	private static String lfLine = new String("");
 
+    // empty line
 	private static String emptyln = new String("      ");
 	private static List<String> emptylnList = new ArrayList<String>();
-	
-	private static int Ssequenceidx = 0;
+
+    //lifeline inside frame
+    private static List<String> fragmentList = new ArrayList<String>();
+    private static String fragmentStr = new String("");
+
+    // keep include message
+    private static List<String> IncludeMsList = new ArrayList<String>();
+    private static String IncludeMsStr ;
+
+    // keep include message
+    private static List<String> MsList = new ArrayList<String>();
+    private static String MsStr = new String("") ;
+
+    // total list
+    private static List<String> totalList = new ArrayList<String>();
+    private static String totalStr = new String("") ;
+    private static List<String> lifeList = new ArrayList<String>();
+    private static String lifeStr = new String("") ;
+
+    // total list2
+    private static List<String> conList = new ArrayList<String>();
+    private static String conStr = new String("") ;
+    private static List<String> sumList = new ArrayList<String>();
+    private static String sumStr = new String("") ;
+
+    //total Message
+    private static List<String> mTotalList = new ArrayList<String>();
+    private static String mTotalStr = new String("") ;
+    private static List<String> mtList = new ArrayList<String>();
+    private static String mtStr = new String("") ;
+
+
+    // Ms list2
+    private static List<String> showmList = new ArrayList<String>();
+    private static String showmStr = new String("") ;
+
+
+
+    private static int num = 0 ;
+
+
+    private static int Ssequenceidx = 0;
 	private static String[] SequenceZuname = new String[1000];      
 	private static String[] SequenceZutype = new String[1000];      
 	private static String[] SequenceMessage = new String[1000];     
@@ -161,8 +204,9 @@ public class SqBuilder {
 						System.out.println(zu);
 						// con.add(zu);
 						IInteraction interaction = sequence.getInteraction();
+                        showIncludeMessagesInCombinedFragment(sequence);
 						showInteraction(interaction);
-						showIncludeMessagesInCombinedFragment(sequence);
+
 
 						if (err != "1")
 						{
@@ -190,12 +234,48 @@ public class SqBuilder {
         // close project.
         prjAccessor.close();
 		contents.add(channelMessageList);
-		contents.add(channelFrameList);
-		emptylnList.add(emptyln);
-		emptylnList.add(emptyln);
-		emptylnList.add(emptyln);
-		contents.add(emptylnList);
-		contents.add(lfLineList);
+        if(channelFrameList.size() > 1 ){
+		    contents.add(channelFrameList);
+            emptylnList.add(emptyln);
+            emptylnList.add(emptyln);
+            emptylnList.add(emptyln);
+            contents.add(emptylnList);
+            contents.add(lfLineList);
+            contents.add(emptylnList);
+            contents.add(fragmentList);
+
+
+        }else {
+            emptylnList.add(emptyln);
+            emptylnList.add(emptyln);
+            emptylnList.add(emptyln);
+            contents.add(emptylnList);
+            contents.add(showmList);
+            contents.add(mTotalList);
+            contents.add(emptylnList);
+            contents.add(lfLineList);
+            contents.add(totalList);
+            contents.add(emptylnList);
+            conStr = zu + " = "+ zu+"I[|{" ;
+            conList.add(conStr);
+                for (String sum : sumList) {
+                        if(sum.equals(sumList.get(0))){
+                            conStr = sum ;
+                            conList.add(conStr);
+                        }else{
+                            conStr = ",";
+                            conList.add(conStr);
+                            conStr = sum ;
+                            conList.add(conStr);
+                        }
+
+
+                }
+            conStr = "}|]MSG" ;
+            conList.add(conStr);
+            contents.add(conList);
+
+        }
         return contents;
 	}
 	
@@ -287,6 +367,7 @@ public class SqBuilder {
 		ILifeline[] lifelines = interaction.getLifelines();
 		boolean first = true;
 		for (ILifeline lifeline : lifelines) {
+		    lifeList.add(lifeline.toString());
 			lfLine = lifeline.toString() ;
 			lfLineList.add(lfLine);
 			lfLine = " = ";
@@ -298,6 +379,31 @@ public class SqBuilder {
 			
 		}
 		System.out.println("Lifeline end.");
+        totalStr = zu +"I = " ;
+        totalList.add(totalStr);
+        if(lifeList.size() > 1){
+            for (String lf : lifeList) {
+                if(lf.equals(lifeList.get(lifeList.size()-1))){
+                    totalStr = lf;
+                    totalList.add(totalStr);
+                    totalStr = ")" ;
+                    totalList.add(totalStr);
+                }else if(lf.equals(lifeList.get(0))){
+                    totalStr = lf;
+                    totalList.add(totalStr);
+                    totalStr = " ||| ";
+                    totalList.add(totalStr);
+                }else{
+                    totalStr = "("+ lf;
+                    totalList.add(totalStr);
+                    totalStr = " ||| ";
+                    totalList.add(totalStr);
+                }
+            }
+        }else{
+            totalStr = lifeList.get(0).toString() + " ||| "+ lifeList.get(1).toString();
+            totalList.add(totalStr);
+        }
 	}
 
 
@@ -338,8 +444,14 @@ public class SqBuilder {
 				showMiniSeparator();
 				showCombinedFragment(combinedFragment);
 				showMiniSeparator();
-				lfLine = "->f1_b->f1_e->";
-				lfLineList.add(lfLine);
+
+                if(lfLineList != null) {
+                    lfLine = "->f1_b->f1_e->";
+                    lfLineList.add(lfLine);
+                }else if(lfLineList == null){
+                    lfLine = "f1_b->f1_e";
+                    lfLineList.add(lfLine);
+                }
 				continue;
 			}
 			
@@ -349,20 +461,30 @@ public class SqBuilder {
 			}
 			System.out.println(fragment);
 
-			if(state == true){
-				lfLine = "s_"+fragment.toString() ;
+
+            for (String lfstr : lfLineList) {
+
+                    if (lfstr.equals("s_"+fragment.toString()+"->")) {
+                            state = false ;
+
+                    }
+            }
+
+            if(state == true){
+				lfLine = "s_"+fragment.toString()+"->" ;
 				lfLineList.add(lfLine);
 			}else{
-				lfLine = "r_"+fragment.toString() ;
+				lfLine = "r_"+fragment.toString()+"->" ;
 				lfLineList.add(lfLine);
+                state = true;
 			}
 			
 		}
 		System.out.println("Fragment end.");
-		lfLine = "->SKIP"+System.lineSeparator();
+		lfLine = "SKIP"+System.lineSeparator();
 		lfLineList.add(lfLine);
-		
-		state = false ;
+
+
 		showMiniSeparator();
 	}
 	
@@ -372,6 +494,7 @@ public class SqBuilder {
 	 */
 	private static void showCombinedFragment(ICombinedFragment combinedFragment) {
 		System.out.println("CombinedFragment");
+
 		
 		if (combinedFragment.isAlt())
 		{
@@ -379,6 +502,34 @@ public class SqBuilder {
 			errmsg[erridx] = "[" + zu + "] diagram - [Alt] - [" + life + "] lifeline: compound fragment is not available";
 	    	erridx++;
 			err = "1";
+
+            num++ ;
+
+            if(count == 2){
+
+                if(num == 1) {
+                    fragmentStr = "F" + numFrame + "_" + life + " = f" + numFrame + "_b->F" + numFrame + "_" + life + "_ALT" + System.lineSeparator();
+                    fragmentList.add(fragmentStr);
+                    fragmentStr = "F" + numFrame + "_" + life + "_ALT" + " = (f" + numFrame + "_alt1->s_" + IncludeMsList.get(count-2) + "->f" + numFrame + "_e->SKIP)";
+                    fragmentList.add(fragmentStr);
+                    fragmentStr = "[](f" + numFrame + "_alt2->s_" + IncludeMsList.get(count-1) + "->f" + numFrame + "_e->SKIP)"+ System.lineSeparator();
+                    fragmentList.add(fragmentStr);
+                }else if(num == 2){
+                    fragmentStr = "F"  + numFrame + "_" + life + " = f" + numFrame + "_b->F" + numFrame + "_" + life + "_ALT" + System.lineSeparator();
+                    fragmentList.add(fragmentStr);
+                    fragmentStr = "F" + numFrame + "_" + life + "_ALT" + " = (f" + numFrame + "_alt1->r_" + IncludeMsList.get(count-2) + "->f" + numFrame + "_e->SKIP)";
+                    fragmentList.add(fragmentStr);
+                    fragmentStr = "[](f" + numFrame + "_alt2->r_" + IncludeMsList.get(count-1) + "->f" + numFrame + "_e->SKIP)"+ System.lineSeparator();
+                    fragmentList.add(fragmentStr);
+                }
+            }else if(count == 3 ){
+//                fragmentStr = "F"+numFrame+"_"+life+ " = f"+numFrame+"_b->F"+numFrame+"_"+life+"_ALT"+System.lineSeparator();
+//                fragmentList.add(fragmentStr);
+//                fragmentStr = "F"+numFrame+"_"+life+"_ALT"+" = (f1_alt" +System.lineSeparator();
+//                fragmentList.add(fragmentStr);
+            }
+
+
 		}
 		System.out.println("isAssert() : " + combinedFragment.isAssert());
 		if (combinedFragment.isAssert())
@@ -462,26 +613,53 @@ public class SqBuilder {
 		boolean first = true;
 		channelMessageList.add(channel);
 		for (IMessage message : messages) {
-			
+
+            showmStr = message.toString().toUpperCase() + " = ";
+            showmList.add(showmStr);
+            showmStr = "s_"+ message.toString() +"->r_"+ message.toString() + "->"+message.toString().toUpperCase()+ System.lineSeparator()   ;
+            showmList.add(showmStr);
+
 			if (!first){
 				showMiniSeparator();
 				channelMessage = ", s"+ "_" + message.toString() ;
 				channelMessageList.add(channelMessage);
+                sumStr = "s"+ "_" + message.toString() ;
+                sumList.add(sumStr);
 				channelMessage = ", " + "r"+ "_" + message.toString() ;
 				channelMessageList.add(channelMessage);
+                sumStr = "r"+ "_" + message.toString() ;
+                sumList.add(sumStr);
 			}else{
+                sumStr = "s"+ "_" + message.toString() ;
+                sumList.add(sumStr);
 				channelMessage = "s"+ "_" + message.toString() ;
 				channelMessageList.add(channelMessage);
 				channelMessage = ", " + "r"+ "_" + message.toString()+" " ;
 				channelMessageList.add(channelMessage);
+                sumStr = "r"+ "_" + message.toString() ;
+                sumList.add(sumStr);
 			}
 
 			sequenceZuname[sequenceidx ] = zu;
 			sequenceZutype[sequenceidx ] = "Sequence Diagram";
 			showMessage(message,interaction);
 
-			
-			
+            mtStr = message.toString();
+            mtList.add(mtStr);
+
+
+
+
+			if(message.toString() == IncludeMsStr){
+			    if(message.getSource().toString() == life){
+                     MsStr = "s_"+message.toString() ;
+                }else{
+                    MsStr = "r_"+message.toString() ;
+                }
+
+                MsList.add(MsStr);
+
+            }
 				
 			
 			
@@ -497,6 +675,41 @@ public class SqBuilder {
 		       	System.out.println("[" + zu + "] Figure - [" + message + "]: Treated as asynchronous message");
 		    }
 		}
+
+        mTotalStr = "MSG = " ;
+        mTotalList.add(mTotalStr);
+        if(mtList.size() > 2){
+            for (String lf : mtList) {
+                if(lf.equals(mtList.get(mtList.size()-1))){
+                    mTotalStr = lf.toUpperCase();
+                    mTotalList.add(mTotalStr);
+                    mTotalStr = ")" ;
+                    mTotalList.add(mTotalStr);
+                }else if(lf.equals(mtList.get(0))){
+                    mTotalStr = lf.toUpperCase();
+                    mTotalList.add(mTotalStr);
+                    mTotalStr = " ||| ";
+                    mTotalList.add(mTotalStr);
+                }else{
+                    mTotalStr = "("+ lf.toUpperCase();
+                    mTotalList.add(mTotalStr);
+                    mTotalStr = " ||| ";
+                    mTotalList.add(mTotalStr);
+                }
+            }
+        }else{
+            for (String lf : mtList) {
+                if(lf.equals(mtList.get(mtList.size()-1))){
+                    mTotalStr = lf.toUpperCase();
+                    mTotalList.add(mTotalStr);
+                }else if(lf.equals(mtList.get(0))){
+                    mTotalStr = lf.toUpperCase();
+                    mTotalList.add(mTotalStr);
+                    mTotalStr = " ||| ";
+                    mTotalList.add(mTotalStr);
+                }
+            }
+        }
 		showMiniSeparator();
 		System.out.println("Message end.");
 	}
@@ -617,7 +830,7 @@ public class SqBuilder {
 		channelFrameList.add(channelFrame);
 		}
 
-		int count = 0 ;
+		count = 0 ;
 		Rectangle2D combinedFragmentRectangle = combinedFragmentPresentation.getRectangle();
 		for (IPresentation presentation : presentations) {
 			if (isMessagePresentation(presentation)) {
@@ -625,7 +838,10 @@ public class SqBuilder {
 				Point2D[] messagePoints = messagePresentation.getPoints();
 				if(containsTheMessage(combinedFragmentRectangle, messagePoints)){
 					System.out.println("includes message : " + messagePresentation.getLabel());
-					count++;
+					IncludeMsStr = messagePresentation.toString() ;
+                    IncludeMsList.add(IncludeMsStr);
+
+                    count++;
 					
 					channelFrame = ", f"+numFrame+"_"+"alt"+ count ;
 					channelFrameList.add(channelFrame);

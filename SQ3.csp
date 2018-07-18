@@ -1,0 +1,14 @@
+channel s_a, r_a , s_b, r_b
+                  
+A = s_a->r_a->A
+B = s_b->r_b->B
+
+MSG = A ||| B
+                  
+M1 = s_a->SKIP
+M2 = r_a->s_b->SKIP
+M3 = r_b->SKIP
+
+SQ3I = M1 ||| (M2 ||| M3)
+                  
+SQ3 = SQ3I[|{s_a,r_a,s_b,r_b}|]MSG
