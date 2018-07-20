@@ -386,8 +386,12 @@ public class SqBuilder {
                 if(lf.equals(lifeList.get(lifeList.size()-1))){
                     totalStr = lf;
                     totalList.add(totalStr);
-                    totalStr = ")" ;
-                    totalList.add(totalStr);
+					for(int i=2 ; i<lifeList.size() ; i++ ){
+						totalStr = ")" ;
+						totalList.add(totalStr);
+					}
+
+
                 }else if(lf.equals(lifeList.get(0))){
                     totalStr = lf;
                     totalList.add(totalStr);
@@ -824,10 +828,10 @@ public class SqBuilder {
 			channelFrameList.add(channelFrame);
 		}else{
 
-		channelFrame = ", f"+ numFrame+"_b, ";
-		channelFrameList.add(channelFrame);
-		channelFrame = "f"+ numFrame+"_e ";
-		channelFrameList.add(channelFrame);
+			channelFrame = ", f"+ numFrame+"_b, ";
+			channelFrameList.add(channelFrame);
+			channelFrame = "f"+ numFrame+"_e ";
+			channelFrameList.add(channelFrame);
 		}
 
 		count = 0 ;
