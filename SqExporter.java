@@ -6,18 +6,19 @@ import java.util.List;
 public class SqExporter {
 
     public static void main(String[] args) {
-        if (args.length != 2) {
-            System.err.println("Usage: java SqExporter inputFile.asta outputFile.csp");
-            return;
-        }
-        String inputFile = args[0];
-        String outputFile = args[1];
+
+
+//        if (args.length != 2) {
+//            System.err.println("Usage: java SqExporter inputFile.asta outputFile.csp");
+//            return;
+//        }
+
+
 
         try {
-            SqBuilder converter = new SqBuilder(inputFile);
-            List<List<String>> contents = converter.getContents();
-            SqWriter writer = new SqWriter(contents, outputFile);
-            writer.write();
+            Gui a = new Gui(new SqBuilder());
+            a.run();
+
             System.out.println("Done");
 
         } catch (Throwable e) {

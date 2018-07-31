@@ -50,9 +50,8 @@ public class SqWriter {
 
     private void writeAllLines(Writer writer) throws IOException {
         // String delimiter = SUFFIX + separator + PREFIX;
-       
+       System.out.print("AB___");
         for (List<String> line : contents) {
-           
             StringJoiner joiner = new StringJoiner("","",NEW_LINE);
             line.stream().forEach(joiner::add);
             writer.write(joiner.toString());
