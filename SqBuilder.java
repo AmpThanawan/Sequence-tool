@@ -48,86 +48,113 @@ public class SqBuilder {
     private static String err = new String("");
 	public static String life = new String("");
 
-    // Channel
+    // keep Channel
 	public static String channel = new String("channel"+" ");
 	public static String channelMessage = new String("");
 	private static List<String> channelMessageList = new ArrayList<String>();
 
-    // Channel Frame
+    // Channel in Frame's part
     public static String channelFrame = new String("");
 	private static List<String> channelFrameList = new ArrayList<String>();
 	private static int numFrame = 0;
 
-    // state s or r
+    // check state sent or receive
 	private static boolean state = true;
+
+	// check alt
 	private static boolean alt = false ;
 
-    private static int count = 0 ;
+   
 
 	private static int erridx = 0;
 	private static String[] errmsg = new String[1024];
 
     //lifeline outside frame
-	private static List<String> lfLineList = new ArrayList<String>();
-	private static String lfLine = new String("");
+	private static List<String> lifelineList = new ArrayList<String>();
+	private static String lifeLineStr = new String("");
 
-	//lifeline
+	//keep lifeline for use
 	private static List<String> line = new ArrayList<String>();
+	private static String checkLifelineStr = new String("") ;
 
 
-    // empty line
+    // empty line in CSP
 	private static String emptyln = new String("      ");
 	private static List<String> emptylnList = new ArrayList<String>();
 
     //lifeline inside frame
-    private static List<String> fragmentList = new ArrayList<String>();
-    private static String fragmentStr = new String("");
-
-    // keep include message
-    private static List<String> IncludeMsList = new ArrayList<String>();
-    private static String IncludeMsStr ;
-
-    // keep include message
-    private static List<String> MsList = new ArrayList<String>();
-    private static String MsStr = new String("") ;
-
-    // total list
-    private static List<String> totalList = new ArrayList<String>();
-    private static String totalStr = new String("") ;
-    private static List<String> lifeList = new ArrayList<String>();
-    private static String lifeStr = new String("") ;
-
-    // total list2
-    private static List<String> conList = new ArrayList<String>();
-    private static String conStr = new String("") ;
-    private static List<String> sumList = new ArrayList<String>();
-    private static String sumStr = new String("") ;
-
-    //total Message
-    private static List<String> mTotalList = new ArrayList<String>();
-    private static String mTotalStr = new String("") ;
-    private static List<String> mtList = new ArrayList<String>();
-    private static String mtStr = new String("") ;
+    private static List<String> insideFrameList = new ArrayList<String>();
+    private static String insideFrameStr = new String("");
 
 
-    // Ms list2
-    private static List<String> showmList = new ArrayList<String>();
-    private static String showmStr = new String("") ;
+    // SQ total process list
+    private static List<String> sqTotalprocessList = new ArrayList<String>();
+    private static String sqTotalprocessStr = new String("") ;
 
-	private static List<String> TestList = new ArrayList<String>();
-	private static String test = new String("") ;
+	// SQ_Lifeline total process list
+	private static List<String> sumSQLifelineframeList = new ArrayList<String>();
+	private static String sumSQLifelineframeStr = new String("") ;
 
+	// Frame_Lifeline total process list
+	private static List<String> frameLifelineprocessList = new ArrayList<String>();
+	private static String frameLifelineprocessStr = new String("") ;
+	// keep variable frame without "chanel" work for use
+	private static List<String> variableframeList = new ArrayList<String>();
 
-	private static List<String> detail = new ArrayList<String>();
-	private static String s1 = new String("") ;
+	// keep lifeline list for use
+    private static List<String> uselifelineList = new ArrayList<String>();
+    private static String uselifelineStr = new String("") ;
 
-    private static int num = 0 ;
+    // conclude line in csp (last line in csp file)
+    private static List<String> conclusionList = new ArrayList<String>();
+    private static String conclusionStr = new String("") ;
+
+	// sum variable for conclude line in csp (last line in csp file)
+    private static List<String> variableforconclusionList = new ArrayList<String>();
+    private static String variableforconclusionStr = new String("") ;
+
+    // Message's total process (MSG)
+    private static List<String> msgList = new ArrayList<String>();
+    private static String msgStr = new String("") ;
+
+	// Keep Message for use in total process (MSG)
+    private static List<String> keepForMSGList = new ArrayList<String>();
+    private static String keepForMSGStr = new String("") ;
+
+	// keep detail for information text area (UI)
+	private static List<String> detailForInfo = new ArrayList<String>();
+	private static String detailStr = new String("") ;
+
+	// keep Message
+	private static List<String> keepMessageList = new ArrayList<String>();
+	private static String keepMessageStr = new String("") ;
+
+	// keep total of SQI for frame
+	private static List<String> totalSQforFrameList = new ArrayList<String>();
+	private static String totalSQforFrameStr = new String("") ;
+
+	// count when combinedFragment.isAlt()
+    private static int numAlt = 0 ;
+
+	// count when combinedFragment.isAlt()
+	private static int numFrameList = 0 ;
+
+	// check when get combinedFragment for count numframe
 	private static boolean checkcount = false ;
 
-	private static int numk = 0 ;
-	private static int numG = 0 ;
-	private static int numLine = 0 ;
-	private static String chcklifeline = new String("") ;
+	// check variable start
+	private static boolean checkVariable = false ;
+
+	// set 0 for start the frame list line
+	private static int numCheckStart = 0 ;
+	//
+	private static int checkStart = 0 ;
+
+	// count guard in case alt
+	private static int guardCount = 0 ;
+
+
+	private static String temp = new String("")  ;
 
     private static int Ssequenceidx = 0;
 	private static String[] SequenceZuname = new String[1000];      
@@ -197,27 +224,30 @@ public class SqBuilder {
 		numFrame = 0;
 		state = true;
 		alt = false ;
-		count = 0 ;
-		lfLineList = new ArrayList<String>();
+		
+		lifelineList = new ArrayList<String>();
 		line = new ArrayList<String>();
-
+		variableframeList = new ArrayList<String>();
+		totalSQforFrameList = new ArrayList<String>();
 		emptylnList = new ArrayList<String>();
-		fragmentList = new ArrayList<String>();
-		IncludeMsList = new ArrayList<String>();
-		MsList = new ArrayList<String>();
-		totalList = new ArrayList<String>();
-		lifeList = new ArrayList<String>();
+		insideFrameList = new ArrayList<String>();
 
-		conList = new ArrayList<String>();
-		sumList = new ArrayList<String>();
-		mTotalList = new ArrayList<String>();
-		mtList = new ArrayList<String>();
-		showmList = new ArrayList<String>();
-		TestList = new ArrayList<String>();
-		detail = new ArrayList<String>();
-		num = 0 ;
-		numk = 0 ;
-		numG = 0 ;
+		temp = new String("")  ;
+		sqTotalprocessList = new ArrayList<String>();
+
+		uselifelineList = new ArrayList<String>();
+		frameLifelineprocessList = new ArrayList<String>();
+		sumSQLifelineframeList = new ArrayList<String>();
+		conclusionList = new ArrayList<String>();
+		variableforconclusionList = new ArrayList<String>();
+		msgList = new ArrayList<String>();
+		keepForMSGList = new ArrayList<String>();
+		keepMessageList = new ArrayList<String>();
+
+		detailForInfo = new ArrayList<String>();
+		numAlt = 0 ;
+		numCheckStart = 0 ;
+		guardCount = 0 ;
 		checkcount = false ;
 
 		channelFrameList.add(channel);
@@ -251,8 +281,8 @@ public class SqBuilder {
 						boolean first = true;
 						for (ILifeline lifeline : lifelines) {
 
-							chcklifeline = lifeline.toString() ;
-							line.add(chcklifeline);
+							checkLifelineStr = lifeline.toString() ;
+							line.add(checkLifelineStr);
 							System.out.print(lifeline.toString() + " nameeeeee na ja na aj");
 
 
@@ -260,6 +290,7 @@ public class SqBuilder {
 
 						showInteraction(interaction);
 						showIncludeMessagesInCombinedFragment(sequence);
+
 
 
 						if (err != "1")
@@ -294,10 +325,36 @@ public class SqBuilder {
             emptylnList.add(emptyln);
             emptylnList.add(emptyln);
             contents.add(emptylnList);
-            contents.add(lfLineList);
+            contents.add(lifelineList);
             contents.add(emptylnList);
-            contents.add(fragmentList);
-			contents.add(TestList);
+            contents.add(insideFrameList);
+			contents.add(emptylnList);
+			contents.add(keepMessageList);
+			contents.add(msgList);
+			contents.add(emptylnList);
+			contents.add(sumSQLifelineframeList);
+			contents.add(frameLifelineprocessList);
+			contents.add(totalSQforFrameList);
+			contents.add(emptylnList);
+			conclusionStr = zu + " = "+ zu+"I[|{" ;
+			conclusionList.add(conclusionStr);
+			for (String sum : variableforconclusionList) {
+				if(sum.equals(variableforconclusionList.get(0))){
+					conclusionStr = sum ;
+					conclusionList.add(conclusionStr);
+				}else{
+					conclusionStr = ",";
+					conclusionList.add(conclusionStr);
+					conclusionStr = sum ;
+					conclusionList.add(conclusionStr);
+				}
+
+
+			}
+			conclusionStr = "}|]MSG" ;
+			conclusionList.add(conclusionStr);
+			contents.add(conclusionList);
+
 
 
         }else {
@@ -305,30 +362,30 @@ public class SqBuilder {
             emptylnList.add(emptyln);
             emptylnList.add(emptyln);
             contents.add(emptylnList);
-            contents.add(showmList);
-            contents.add(mTotalList);
+            contents.add(keepMessageList);
+            contents.add(msgList);
             contents.add(emptylnList);
-            contents.add(lfLineList);
-            contents.add(totalList);
+            contents.add(lifelineList);
+            contents.add(sqTotalprocessList);
             contents.add(emptylnList);
-            conStr = zu + " = "+ zu+"I[|{" ;
-            conList.add(conStr);
-                for (String sum : sumList) {
-                        if(sum.equals(sumList.get(0))){
-                            conStr = sum ;
-                            conList.add(conStr);
+            conclusionStr = zu + " = "+ zu+"I[|{" ;
+            conclusionList.add(conclusionStr);
+                for (String sum : variableforconclusionList) {
+                        if(sum.equals(variableforconclusionList.get(0))){
+                            conclusionStr = sum ;
+                            conclusionList.add(conclusionStr);
                         }else{
-                            conStr = ",";
-                            conList.add(conStr);
-                            conStr = sum ;
-                            conList.add(conStr);
+                            conclusionStr = ",";
+                            conclusionList.add(conclusionStr);
+                            conclusionStr = sum ;
+                            conclusionList.add(conclusionStr);
                         }
 
 
                 }
-            conStr = "}|]MSG" ;
-            conList.add(conStr);
-            contents.add(conList);
+            conclusionStr = "}|]MSG" ;
+            conclusionList.add(conclusionStr);
+            contents.add(conclusionList);
 
         }
 
@@ -348,7 +405,7 @@ public class SqBuilder {
 		ProjectAccessor prjAccessor = AstahAPI.getAstahAPI().getProjectAccessor();
 		prjAccessor.open(inputFile);
 		IModel iModel = prjAccessor.getProject();
-
+		keepMessageList = new ArrayList<String>();
 		List<List<String>> informations = new ArrayList<List<String>>();
 		List<String> con = new ArrayList<String>();
 		channelMessageList = new ArrayList<String>();
@@ -356,27 +413,29 @@ public class SqBuilder {
 		numFrame = 0;
 		state = true;
 		alt = false ;
-		count = 0 ;
-		lfLineList = new ArrayList<String>();
+
+		lifelineList = new ArrayList<String>();
 		line = new ArrayList<String>();
-
+		variableframeList = new ArrayList<String>();
 		emptylnList = new ArrayList<String>();
-		fragmentList = new ArrayList<String>();
-		IncludeMsList = new ArrayList<String>();
-		MsList = new ArrayList<String>();
-		totalList = new ArrayList<String>();
-		lifeList = new ArrayList<String>();
+		insideFrameList = new ArrayList<String>();
+		temp = new String("")  ;
+		totalSQforFrameList = new ArrayList<String>();
+		sqTotalprocessList = new ArrayList<String>();
+		uselifelineList = new ArrayList<String>();
+		frameLifelineprocessList = new ArrayList<String>();
+		sumSQLifelineframeList = new ArrayList<String>();
+		conclusionList = new ArrayList<String>();
+		variableforconclusionList = new ArrayList<String>();
+		msgList = new ArrayList<String>();
+		keepForMSGList = new ArrayList<String>();
 
-		conList = new ArrayList<String>();
-		sumList = new ArrayList<String>();
-		mTotalList = new ArrayList<String>();
-		mtList = new ArrayList<String>();
-		showmList = new ArrayList<String>();
-		TestList = new ArrayList<String>();
-		detail = new ArrayList<String>();
-		num = 0 ;
-		numk = 0 ;
-		numG = 0 ;
+
+		detailForInfo = new ArrayList<String>();
+
+		numAlt = 0 ;
+		numCheckStart = 0 ;
+		guardCount = 0 ;
 		checkcount = false ;
 
 		channelFrameList.add(channel);
@@ -432,7 +491,7 @@ public class SqBuilder {
 		}
 
 		System.out.print("ADD_____");
-		informations.add(detail);
+		informations.add(detailForInfo);
 
 		// close project.
 		prjAccessor.close();
@@ -471,17 +530,17 @@ public class SqBuilder {
 	}
 
 	private static void showSeparator() {
-		s1 = "-----------------------" + System.lineSeparator();
-		detail.add(s1);
-		System.out.println(s1);
+		detailStr = "-----------------------" + System.lineSeparator();
+		detailForInfo.add(detailStr);
+		System.out.println(detailStr);
 
 
 	}
 	private static void showMiniSeparator() {
 
-		s1 = "----" + System.lineSeparator();
-		detail.add(s1);
-		System.out.println(s1);
+		detailStr = "----" + System.lineSeparator();
+		detailForInfo.add(detailStr);
+		System.out.println(detailStr);
 
 	}
 
@@ -492,9 +551,9 @@ public class SqBuilder {
 	 */
 	private static void showInteraction(IInteraction interaction) {
 
-		s1 = "start interaction" + System.lineSeparator();
-		detail.add(s1);
-		System.out.println(s1);
+		detailStr = "start interaction" + System.lineSeparator();
+		detailForInfo.add(detailStr);
+		System.out.println(detailStr);
 
 
 		showSeparator();
@@ -506,9 +565,10 @@ public class SqBuilder {
 		showSeparator();
 
 
-		s1 = "end." + System.lineSeparator() ;
-		System.out.println(s1);
-		detail.add(s1);
+		detailStr = "end." + System.lineSeparator() ;
+		System.out.println(detailStr);
+		detailForInfo.add(detailStr);
+		showInsideFrame(interaction);
 	}
 
 	/**
@@ -517,18 +577,18 @@ public class SqBuilder {
 	 */
 	private static void showGates(IInteraction interaction) {
 
-		s1 = "Gate start."+ System.lineSeparator() ;
-		detail.add(s1);
-		System.out.println(s1);
+		detailStr = "Gate start."+ System.lineSeparator() ;
+		detailForInfo.add(detailStr);
+		System.out.println(detailStr);
 
 		IGate[] gates = interaction.getGates();
 		for (IGate gate : gates) {
 			showGate(gate);
 		}
 
-		s1 = "Gate end." + System.lineSeparator();
-		detail.add(s1);
-		System.out.println(s1);
+		detailStr = "Gate end." + System.lineSeparator();
+		detailForInfo.add(detailStr);
+		System.out.println(detailStr);
 
 
 	}
@@ -549,9 +609,9 @@ public class SqBuilder {
 	 */
 	private static void showLifelines(IInteraction interaction) {
 
-		s1 = "Lifeline start." + System.lineSeparator();
-		detail.add(s1);
-		System.out.println(s1);
+		detailStr = "Lifeline start." + System.lineSeparator();
+		detailForInfo.add(detailStr);
+		System.out.println(detailStr);
 
 		ILifeline[] lifelines = interaction.getLifelines();
 		boolean first = true;
@@ -562,52 +622,61 @@ public class SqBuilder {
 //			System.out.print(lifeline.toString() + " nameeeeee na ja na aj");
 //			System.out.print(line.size()+ "checklinesize");
 
-		    lifeList.add(lifeline.toString());
-			lfLine = lifeline.toString() ;
+		    uselifelineList.add(lifeline.toString());
+			lifeLineStr = lifeline.toString() ;
 
-			lfLineList.add(lfLine);
-			lfLine = " = ";
-			lfLineList.add(lfLine);
+			lifelineList.add(lifeLineStr);
+			lifeLineStr = " = ";
+			lifelineList.add(lifeLineStr);
 			if (!first)
 				showMiniSeparator();
 			showLifeline(lifeline);
 			first = false;
 			
 		}
-		s1 = "Lifeline end." + System.lineSeparator();
-		detail.add(s1);
-		System.out.println(s1);
+		detailStr = "Lifeline end." + System.lineSeparator();
+		detailForInfo.add(detailStr);
+		System.out.println(detailStr);
 
 
-        totalStr = zu +"I = " ;
-        totalList.add(totalStr);
-        if(lifeList.size() > 1){
-            for (String lf : lifeList) {
-                if(lf.equals(lifeList.get(lifeList.size()-1))){
-                    totalStr = lf;
-                    totalList.add(totalStr);
-					for(int i=2 ; i<lifeList.size() ; i++ ){
-						totalStr = ")" ;
-						totalList.add(totalStr);
+        sqTotalprocessStr = zu +"I = " ;
+        sqTotalprocessList.add(sqTotalprocessStr);
+        if(uselifelineList.size() > 1){
+            for (String lf : uselifelineList) {
+                if(lf.equals(uselifelineList.get(uselifelineList.size()-1))){
+                    sqTotalprocessStr = lf;
+                    sqTotalprocessList.add(sqTotalprocessStr);
+					for(int i=2 ; i<uselifelineList.size() ; i++ ){
+						sqTotalprocessStr = ")" ;
+						sqTotalprocessList.add(sqTotalprocessStr);
 					}
 
 
-                }else if(lf.equals(lifeList.get(0))){
-                    totalStr = lf;
-                    totalList.add(totalStr);
-                    totalStr = " ||| ";
-                    totalList.add(totalStr);
+                }else if(lf.equals(uselifelineList.get(0))){
+                    sqTotalprocessStr = lf;
+                    sqTotalprocessList.add(sqTotalprocessStr);
+                    sqTotalprocessStr = " ||| ";
+                    sqTotalprocessList.add(sqTotalprocessStr);
                 }else{
-                    totalStr = "("+ lf;
-                    totalList.add(totalStr);
-                    totalStr = " ||| ";
-                    totalList.add(totalStr);
+                    sqTotalprocessStr = "("+ lf;
+                    sqTotalprocessList.add(sqTotalprocessStr);
+                    sqTotalprocessStr = " ||| ";
+                    sqTotalprocessList.add(sqTotalprocessStr);
                 }
             }
         }else{
-            totalStr = lifeList.get(0).toString() + " ||| "+ lifeList.get(1).toString();
-            totalList.add(totalStr);
+            sqTotalprocessStr = uselifelineList.get(0).toString() + " ||| "+ uselifelineList.get(1).toString();
+            sqTotalprocessList.add(sqTotalprocessStr);
         }
+
+
+
+
+
+
+
+
+
 	}
 
 
@@ -619,9 +688,9 @@ public class SqBuilder {
 
 
 
-		s1 = "Lifeline : " + lifeline + System.lineSeparator();
-		detail.add(s1);
-		System.out.println(s1);
+		detailStr = "Lifeline : " + lifeline + System.lineSeparator();
+		detailForInfo.add(detailStr);
+		System.out.println(detailStr);
 
 
 
@@ -639,9 +708,9 @@ public class SqBuilder {
 		IClass base = lifeline.getBase();
 		if (base != null) {
 
-			s1 = "Base : " + base + System.lineSeparator();
-			detail.add(s1);
-			System.out.println(s1);
+			detailStr = "Base : " + base + System.lineSeparator();
+			detailForInfo.add(detailStr);
+			System.out.println(detailStr);
 
 		}
 	}
@@ -653,9 +722,10 @@ public class SqBuilder {
 	private static void showFragments(ILifeline lifeline) {
 		showMiniSeparator();
 
-		s1 = "Fragment start."+ System.lineSeparator();
-		detail.add(s1);
-		System.out.println(s1);
+		detailStr = "Fragment start."+ System.lineSeparator();
+		detailForInfo.add(detailStr);
+		System.out.println(detailStr);
+		boolean end = false ;
 
 		INamedElement[] fragments = lifeline.getFragments();
 		for (INamedElement fragment : fragments) {
@@ -668,40 +738,57 @@ public class SqBuilder {
 
 				if(checkcount == false){
 					numFrame++;
+					if(lifelineList != null) {
+						lifeLineStr = "f"+ numFrame +"_b->f"+ numFrame +"_e->";
+						lifelineList.add(lifeLineStr);
+					}else if(lifelineList == null){
+						lifeLineStr = "f"+ numFrame +"_b->f"+ numFrame +"_e";
+						lifelineList.add(lifeLineStr);
+					}
+				}else{
+
+					if(end == false){
+						for(int i=1 ; i < numFrame+1 ; i++){
+							if(lifelineList != null) {
+								lifeLineStr = "f"+ i +"_b->f"+ i +"_e->";
+								lifelineList.add(lifeLineStr);
+							}else if(lifelineList == null){
+								lifeLineStr = "f"+ i +"_b->f"+ i +"_e";
+								lifelineList.add(lifeLineStr);
+							}
+						}
+					}
+
+					end = true ;
+
 				}
 
 				showCombinedFragment(combinedFragment);
 				showMiniSeparator();
 
-                if(lfLineList != null) {
-                    lfLine = "f1_b->f1_e->";
-                    lfLineList.add(lfLine);
-                }else if(lfLineList == null){
-                    lfLine = "f1_b->f1_e";
-                    lfLineList.add(lfLine);
-                }
+
 				continue;
 			}
 
 			
 			if (fragment instanceof IStateInvariant) {
 
-				s1 = "StateInvariant : " + fragment +System.lineSeparator();
-				detail.add(s1);
-				System.out.println(s1);
+				detailStr = "StateInvariant : " + fragment +System.lineSeparator();
+				detailForInfo.add(detailStr);
+				System.out.println(detailStr);
 
 				continue;
 			}
 
 
-			s1 = fragment +System.lineSeparator();
-			detail.add(s1);
-			System.out.println(s1);
+			detailStr = fragment +System.lineSeparator();
+			detailForInfo.add(detailStr);
+			System.out.println(detailStr);
 
 
 
 
-            for (String lfstr : lfLineList) {
+            for (String lfstr : lifelineList) {
 
                     if (lfstr.equals("s_"+fragment.toString()+"->")) {
                             state = false ;
@@ -710,39 +797,160 @@ public class SqBuilder {
             }
 
             if(state == true){
-				lfLine = "s_"+fragment.toString()+"->" ;
-				lfLineList.add(lfLine);
+				lifeLineStr = "s_"+fragment.toString()+"->" ;
+				lifelineList.add(lifeLineStr);
 			}else{
-				lfLine = "r_"+fragment.toString()+"->" ;
-				lfLineList.add(lfLine);
+				lifeLineStr = "r_"+fragment.toString()+"->" ;
+				lifelineList.add(lifeLineStr);
                 state = true;
 			}
 			
 		}
 
-		s1 = "Fragment end." +System.lineSeparator();
+		detailStr = "Fragment end." +System.lineSeparator();
 
-		detail.add(s1);
-		System.out.println(s1);
+		detailForInfo.add(detailStr);
+		System.out.println(detailStr);
 
 
-		lfLine = "SKIP"+System.lineSeparator();
-		lfLineList.add(lfLine);
+		lifeLineStr = "SKIP"+System.lineSeparator();
+		lifelineList.add(lifeLineStr);
 
 
 		showMiniSeparator();
 		checkcount = true ;
 	}
-	
-	
+
+
+
+	/**
+	 *
+	 * @param lifeline
+	 */
+	private static void showInsideFrame(IInteraction interaction) {
+		ILifeline[] lifelines = interaction.getLifelines();
+		int countFrame = 0 ;
+		int gCount = 0 ;
+		checkStart = 0 ;
+		for (ILifeline lifeline : lifelines) {
+			countFrame = 0;
+			INamedElement[] fragments = lifeline.getFragments();
+			for (INamedElement fragment : fragments) {
+				if (fragment instanceof ICombinedFragment) {
+					ICombinedFragment combinedFragment = (ICombinedFragment) fragment;
+					 gCount = 0 ;
+					if (combinedFragment.isAlt()){
+						IInteractionOperand[] interactionOperands = combinedFragment.getInteractionOperands();
+						IMessage[] messages = null ;
+							countFrame ++;
+							insideFrameStr = "F" + countFrame + "_" + lifeline.toString() + " = f" + countFrame + "_b->F" + countFrame + "_" + lifeline.toString() + "_ALT" + System.lineSeparator()+ "F" + countFrame + "_" + lifeline.toString() + "_ALT" + " = ";
+							insideFrameList.add(insideFrameStr);
+
+						for (IInteractionOperand interactionOperand : interactionOperands) {
+							if(interactionOperand.getGuard() != null){
+								gCount++;
+							}
+
+
+							messages = interactionOperand.getMessages();
+
+							if (checkStart == 0) {
+								insideFrameStr = "(f" + countFrame + "_alt" + gCount ;
+								insideFrameList.add(insideFrameStr);
+								for (IMessage message : messages) {
+									if(message.getSource().toString().equals(lifeline.toString())){
+										insideFrameStr =  "->" ;
+										insideFrameList.add(insideFrameStr);
+										insideFrameStr =  "s_"+ message ;
+										insideFrameList.add(insideFrameStr);
+
+									}else if(message.getTarget().toString().equals(lifeline.toString())){
+										insideFrameStr =  "->" ;
+										insideFrameList.add(insideFrameStr);
+										insideFrameStr =  "r_"+ message ;
+										insideFrameList.add(insideFrameStr);
+
+									}
+									insideFrameStr = "->f" + countFrame + "_e->SKIP)" ;
+									insideFrameList.add(insideFrameStr);
+								}
+								checkStart++;
+							}else if (checkStart == interactionOperands.length-1) {
+								insideFrameStr = "[]" ;
+								insideFrameList.add(insideFrameStr);
+								insideFrameStr = "(f" + countFrame + "_alt" + gCount ;
+								insideFrameList.add(insideFrameStr);
+								for (IMessage message : messages) {
+									if(message.getSource().toString().equals(lifeline.toString())){
+										insideFrameStr =  "->" ;
+										insideFrameList.add(insideFrameStr);
+										insideFrameStr =  "s_"+ message ;
+										insideFrameList.add(insideFrameStr);
+
+									}else if(message.getTarget().toString().equals(lifeline.toString())){
+										insideFrameStr =  "->" ;
+										insideFrameList.add(insideFrameStr);
+										insideFrameStr =  "r_"+ message ;
+										insideFrameList.add(insideFrameStr);
+
+									}
+									insideFrameStr = "->f" + countFrame + "_e->SKIP)" +System.lineSeparator(); ;
+									insideFrameList.add(insideFrameStr);
+								}
+								checkStart = 0 ;
+
+							}else{
+								insideFrameStr = "(f" + countFrame + "_alt" + gCount ;
+								insideFrameList.add(insideFrameStr);
+								for (IMessage message : messages) {
+									if(message.getSource().toString().equals(lifeline.toString())){
+										insideFrameStr =  "->" ;
+										insideFrameList.add(insideFrameStr);
+										insideFrameStr =  "s_"+ message ;
+										insideFrameList.add(insideFrameStr);
+
+									}else if(message.getTarget().toString().equals(lifeline.toString())){
+										insideFrameStr =  "->" ;
+										insideFrameList.add(insideFrameStr);
+										insideFrameStr =  "r_"+ message ;
+										insideFrameList.add(insideFrameStr);
+
+									}
+									insideFrameStr = "->f" + countFrame + "_e->SKIP)" ;
+									insideFrameList.add(insideFrameStr);
+								}
+								checkStart++;
+							}
+
+
+
+
+
+						}
+
+
+
+					}
+
+				}
+			}
+
+		}
+
+	}
+
+
+
+
 	/**
 	 * @param combinedFragment
 	 */
 	private static void showCombinedFragment(ICombinedFragment combinedFragment) {
 
-		s1 = "CombinedFragment" +System.lineSeparator();
-		detail.add(s1);
-		System.out.println(s1);
+		detailStr = "CombinedFragment" +System.lineSeparator();
+		detailForInfo.add(detailStr);
+		System.out.println(detailStr);
+
 
 
 
@@ -752,9 +960,9 @@ public class SqBuilder {
 		if (combinedFragment.isAlt())
 		{
 
-			s1 = "[" + zu + "] Figure - [Alt] - [" + life + "] Lifeline: Composite fragment not available" +System.lineSeparator();
-			detail.add(s1);
-			System.out.println(s1);
+			detailStr = "[" + zu + "] Figure - [Alt] - [" + life + "] Lifeline: Composite fragment not available" +System.lineSeparator();
+			detailForInfo.add(detailStr);
+			System.out.println(detailStr);
 
 
 			errmsg[erridx] = "[" + zu + "] diagram - [Alt] - [" + life + "] lifeline: compound fragment is not available";
@@ -762,22 +970,29 @@ public class SqBuilder {
 			err = "1";
 			alt = true ;
 
+					numAlt++ ;
 
-			num++ ;
+
+
+
+
+
+
+
 
 
 		}
-		s1 = "isAssert() : " + combinedFragment.isAssert() + System.lineSeparator();
-		detail.add(s1);
-		System.out.println(s1);
+		detailStr = "isAssert() : " + combinedFragment.isAssert() + System.lineSeparator();
+		detailForInfo.add(detailStr);
+		System.out.println(detailStr);
 
 
 		if (combinedFragment.isAssert())
 		{
 
-			s1 = "[" + zu + "] Figure - [Assert] - [" + life + "] Lifeline: Composite fragment not available" +System.lineSeparator();
-			detail.add(s1);
-			System.out.println(s1);
+			detailStr = "[" + zu + "] Figure - [Assert] - [" + life + "] Lifeline: Composite fragment not available" +System.lineSeparator();
+			detailForInfo.add(detailStr);
+			System.out.println(detailStr);
 
 
 			errmsg[erridx] = "[" + zu + "] Figure - [Assert] - [" + life + "] Lifeline: Composite fragment not available";
@@ -785,18 +1000,18 @@ public class SqBuilder {
 			err = "1";
 		}
 
-		s1 = "isBreak() : " + combinedFragment.isBreak() + System.lineSeparator();
-		detail.add(s1);
-		System.out.println(s1);
+		detailStr = "isBreak() : " + combinedFragment.isBreak() + System.lineSeparator();
+		detailForInfo.add(detailStr);
+		System.out.println(detailStr);
 
 
 		if (combinedFragment.isBreak())
 		{
 
 
-			s1 = "[" + zu + "] Figure - [Break] - [" + life + "] Lifeline: Composite fragment not available" +System.lineSeparator();
-			detail.add(s1);
-			System.out.println(s1);
+			detailStr = "[" + zu + "] Figure - [Break] - [" + life + "] Lifeline: Composite fragment not available" +System.lineSeparator();
+			detailForInfo.add(detailStr);
+			System.out.println(detailStr);
 
 
 			errmsg[erridx] = "[" + zu + "] Figure - [Break] - [" + life + "] lifeline: composite fragment not available";
@@ -804,17 +1019,17 @@ public class SqBuilder {
 			err = "1";
 		}
 
-		s1 = "isConsider() : " + combinedFragment.isConsider() + System.lineSeparator();
-		detail.add(s1);
-		System.out.println(s1);
+		detailStr = "isConsider() : " + combinedFragment.isConsider() + System.lineSeparator();
+		detailForInfo.add(detailStr);
+		System.out.println(detailStr);
 
 
 
 		if (combinedFragment.isConsider())
 		{
-			s1 = "[" + zu + "] Figure - [Consider] - [" + life + "] Lifeline: Composite fragment not available" +System.lineSeparator();
-			detail.add(s1);
-			System.out.println(s1);
+			detailStr = "[" + zu + "] Figure - [Consider] - [" + life + "] Lifeline: Composite fragment not available" +System.lineSeparator();
+			detailForInfo.add(detailStr);
+			System.out.println(detailStr);
 
 
 			errmsg[erridx] = "[" + zu + "] Figure - [Consider] - [" + life + "] lifeline: composite fragment not available";
@@ -822,17 +1037,17 @@ public class SqBuilder {
 			err = "1";
 		}
 
-		s1 = "isCritical() : " + combinedFragment.isCritical() + System.lineSeparator();
-		detail.add(s1);
-		System.out.println(s1);
+		detailStr = "isCritical() : " + combinedFragment.isCritical() + System.lineSeparator();
+		detailForInfo.add(detailStr);
+		System.out.println(detailStr);
 
 
 		if (combinedFragment.isCritical())
 		{
 
-			s1 = "[" + zu + "] Figure - [Critical] - [" + life + "] Lifeline: Composite fragment not available" +System.lineSeparator();
-			detail.add(s1);
-			System.out.println(s1);
+			detailStr = "[" + zu + "] Figure - [Critical] - [" + life + "] Lifeline: Composite fragment not available" +System.lineSeparator();
+			detailForInfo.add(detailStr);
+			System.out.println(detailStr);
 
 
 			errmsg[erridx] = "[" + zu + "] Figure - [Critical] - [" + life + "] lifeline: composite fragment not available";
@@ -840,16 +1055,16 @@ public class SqBuilder {
 			err = "1";
 		}
 
-		s1 = "isIgnore() : " + combinedFragment.isIgnore() + System.lineSeparator();
-		detail.add(s1);
-		System.out.println(s1);
+		detailStr = "isIgnore() : " + combinedFragment.isIgnore() + System.lineSeparator();
+		detailForInfo.add(detailStr);
+		System.out.println(detailStr);
 
 
 		if (combinedFragment.isIgnore())
 		{
-			s1 = "[" + zu + "] Figure - [Ignore] - [" + life + "] Lifeline: Composite fragment not available" +System.lineSeparator();
-			detail.add(s1);
-			System.out.println(s1);
+			detailStr = "[" + zu + "] Figure - [Ignore] - [" + life + "] Lifeline: Composite fragment not available" +System.lineSeparator();
+			detailForInfo.add(detailStr);
+			System.out.println(detailStr);
 
 
 			errmsg[erridx] = "[" + zu + "] Figure - [Ignore] - [" + life + "] lifeline: composite fragment not available";
@@ -857,17 +1072,17 @@ public class SqBuilder {
 			err = "1";
 		}
 
-		s1 = "isLoop() : " + combinedFragment.isLoop() + System.lineSeparator();
-		detail.add(s1);
-		System.out.println(s1);
+		detailStr = "isLoop() : " + combinedFragment.isLoop() + System.lineSeparator();
+		detailForInfo.add(detailStr);
+		System.out.println(detailStr);
 
 
 		if (combinedFragment.isLoop())
 		{
 
-			s1 = "[" + zu + "] Figure - [Loop] - [" + life + "] Lifeline: Composite fragment not available" +System.lineSeparator();
-			detail.add(s1);
-			System.out.println(s1);
+			detailStr = "[" + zu + "] Figure - [Loop] - [" + life + "] Lifeline: Composite fragment not available" +System.lineSeparator();
+			detailForInfo.add(detailStr);
+			System.out.println(detailStr);
 
 
 			errmsg[erridx] = "[" + zu + "] Figure - [Loop] - [" + life + "] lifeline: composite fragment not available";
@@ -875,17 +1090,17 @@ public class SqBuilder {
 			err = "1";
 		}
 
-		s1 = "isNeg() : " + combinedFragment.isNeg() + System.lineSeparator();
-		detail.add(s1);
-		System.out.println(s1);
+		detailStr = "isNeg() : " + combinedFragment.isNeg() + System.lineSeparator();
+		detailForInfo.add(detailStr);
+		System.out.println(detailStr);
 
 
 
 		if (combinedFragment.isNeg())
 		{
-			s1 = "[" + zu + "] Figure - [Neg] - [" + life + "] Lifeline: Composite fragment not available" +System.lineSeparator();
-			detail.add(s1);
-			System.out.println(s1);
+			detailStr = "[" + zu + "] Figure - [Neg] - [" + life + "] Lifeline: Composite fragment not available" +System.lineSeparator();
+			detailForInfo.add(detailStr);
+			System.out.println(detailStr);
 
 
 			errmsg[erridx] = "[" + zu + "] Figure - [Neg] - [" + life + "] lifeline: composite fragment not available";
@@ -893,16 +1108,16 @@ public class SqBuilder {
 			err = "1";
 		}
 
-		s1 = "isOpt() : " + combinedFragment.isOpt() + System.lineSeparator();
-		detail.add(s1);
-		System.out.println(s1);
+		detailStr = "isOpt() : " + combinedFragment.isOpt() + System.lineSeparator();
+		detailForInfo.add(detailStr);
+		System.out.println(detailStr);
 
 
 		if (combinedFragment.isOpt())
 		{
-			s1 = "[" + zu + "] Figure - [Opt] - [" + life + "] Lifeline: Composite fragment not available" +System.lineSeparator();
-			detail.add(s1);
-			System.out.println(s1);
+			detailStr = "[" + zu + "] Figure - [Opt] - [" + life + "] Lifeline: Composite fragment not available" +System.lineSeparator();
+			detailForInfo.add(detailStr);
+			System.out.println(detailStr);
 
 
 			errmsg[erridx] = "[" + zu + "] Figure - [Opt] - [" + life + "] lifeline: composite fragment not available";
@@ -910,183 +1125,316 @@ public class SqBuilder {
 			err = "1";
 		}
 
+
+
 		IInteractionOperand[] interactionOperands = combinedFragment.getInteractionOperands();
 		IMessage[] messages = null ;
 		ILifeline[] lifelinesCom = null ;
-		count = 0 ;
+		
 
 
 		for (IInteractionOperand interactionOperand : interactionOperands) {
+			if(alt == true && numAlt > 1 && numAlt == line.size()){
+				if(interactionOperand.getGuard() != null){
+					guardCount++;
+				}
+			}
 
-			count++ ;
 
 			if(interactionOperands == null){
 
-				s1 = "null" + System.lineSeparator();
-				detail.add(s1);
-				System.out.println(s1);
+				detailStr = "null" + System.lineSeparator();
+				detailForInfo.add(detailStr);
+				System.out.println(detailStr);
 
 			}else{
 
-				s1 = "interaction operand guard : '" + interactionOperand.getGuard() + "'" + System.lineSeparator();
-				detail.add(s1);
-				System.out.println(s1);
+				detailStr = "interaction operand guard : '" + interactionOperand.getGuard() + "'" + System.lineSeparator();
+				detailForInfo.add(detailStr);
+				System.out.println(detailStr);
 
 
 
 				messages = interactionOperand.getMessages();
 				for (IMessage message : messages) {
-					s1 = "Ms : '" + message.toString() + "' Source : " + message.getSource()+  ", Target : "  + message.getTarget() + System.lineSeparator();
-					detail.add(s1);
-					System.out.println(s1);
+					detailStr = "Ms : '" + message.toString() + "' Source : " + message.getSource()+  ", Target : "  + message.getTarget() + System.lineSeparator();
+					detailForInfo.add(detailStr);
+					System.out.println(detailStr);
 
 
 				}
 
 
-				lifelinesCom = interactionOperand.getLifelines();
-				for (ILifeline life : lifelinesCom) {
-
-					s1 = "Lifeline : '" + life.toString() + "'" + System.lineSeparator();
-					detail.add(s1);
-					System.out.println(s1);
-
-
-
-
-
-				}
+//				lifelinesCom = interactionOperand.getLifelines();
+//				for (ILifeline life : lifelinesCom) {
+//
+//					s1 = "Lifeline : '" + life.toString() + "'" + System.lineSeparator();
+//					detail.add(s1);
+//					System.out.println(s1);
+//
+//
+//
+//
+//
+//				}
 			}
 
 		}
 
-		numk = 0 ;
-		numG = 0 ;
+		numCheckStart = 0 ;
+
 		int ck = 0;
 		System.out.print(line.size()+ "checklinesize");
 
-		if(alt == true && num > 1 && num == line.size()){
-			for(int k=1 ; k< numFrame+1 ; k++){
 
+
+
+		boolean checkVariable = true ;
+		if(alt == true && numAlt > 1 && numAlt == line.size()){
+			for(int k=1 ; k<numFrame+1 ; k++){
+				if( checkVariable == true){
+					channelFrame = "f"+ k+"_b, ";
+					variableframeList.add(channelFrame);
+					channelFrame = "f"+ k+"_e";
+					variableframeList.add(channelFrame);
+				}else{
+
+					channelFrame = ", f"+ k+"_b, ";
+					variableframeList.add(channelFrame);
+					channelFrame = "f"+ k+"_e ";
+					variableframeList.add(channelFrame);
+				}
+			}
+
+			for(int k=1 ; k<numFrame+1 ; k++){
+				for(int i=1 ; i< guardCount+1 ; i++){
+					channelFrame = ", f"+k+"_"+"alt"+ i ;
+					variableframeList.add(channelFrame);
+
+				}
+			}
+
+			for(int k=1 ; k<numFrame+1 ; k++){
+				frameLifelineprocessStr = "F"+k+"_" ;
+				frameLifelineprocessList.add(frameLifelineprocessStr);
+				for (String lf : line) {
+					frameLifelineprocessStr = lf;
+					frameLifelineprocessList.add(frameLifelineprocessStr);
+
+				}
+				frameLifelineprocessStr = " = " ;
+				frameLifelineprocessList.add(frameLifelineprocessStr);
 				for (String lf : line) {
 
-					ck++ ;
-
-					fragmentStr = "F" + k + "_" + lf + " = f" + k + "_b->F" + k + "_" + lf + "_ALT" + System.lineSeparator()+ "F" + k + "_" + lf + "_ALT" + " = ";
-					fragmentList.add(fragmentStr);
-
-					numk = 0 ;
-					numG = 0 ;
 
 
+						if(lf.equals(line.get(line.size()-1))){
+							frameLifelineprocessStr = "F"+k+"_" + lf;
+							frameLifelineprocessList.add(frameLifelineprocessStr);
+							frameLifelineprocessStr = ")"  + System.lineSeparator();
+							frameLifelineprocessList.add(frameLifelineprocessStr);
 
-					for (IInteractionOperand interactionOperand : interactionOperands) {
-
-							if(interactionOperand.getGuard() != null){
-								numG++ ;
+						}else if(lf.equals(line.get(0))){
+							frameLifelineprocessStr = "F"+k+"_" + lf;
+							frameLifelineprocessList.add(frameLifelineprocessStr);
+							frameLifelineprocessStr = "[|{";
+							frameLifelineprocessList.add(frameLifelineprocessStr);
+							frameLifelineprocessStr = "f"+k+ "_b, f"+k+"_e" ;
+							frameLifelineprocessList.add(frameLifelineprocessStr);
+							for(int i=1 ; i< guardCount+1 ; i++){
+								frameLifelineprocessStr =  ", f"+k+"_alt"+i ;
+								frameLifelineprocessList.add(frameLifelineprocessStr);
 							}
 
 
-							messages = interactionOperand.getMessages();
-
-						if (numk == 0) {
-
-
-
-							fragmentStr = "(f" + k + "_alt" + numG ;
-							fragmentList.add(fragmentStr);
-
-							for (IMessage message : messages) {
-
-								if(message.getSource().toString().equals(lf)){
-									fragmentStr =  "->" ;
-									fragmentList.add(fragmentStr);
-									fragmentStr = "s_"+ message ;
-									fragmentList.add(fragmentStr);
-								}else if(message.getTarget().toString().equals(lf)){
-									fragmentStr =  "->" ;
-									fragmentList.add(fragmentStr);
-									fragmentStr = "r_"+message ;
-									fragmentList.add(fragmentStr);
-								}
-
-								fragmentStr = "->f" + k + "_e->SKIP)"  ;
-								fragmentList.add(fragmentStr);
+//						for(int i=0 ; i< variableframeList.size() ; i++){
+//
+//							frameLifelineprocessStr = variableframeList.get(i) ;
+//							frameLifelineprocessList.add(frameLifelineprocessStr);
+//
+//						}
 
 
+
+
+							frameLifelineprocessStr = "}|]";
+							frameLifelineprocessList.add(frameLifelineprocessStr);
+
+
+						}else{
+							frameLifelineprocessStr = "(" ;
+							frameLifelineprocessList.add(frameLifelineprocessStr);
+							frameLifelineprocessStr =  "F"+k+"_" + lf;
+							frameLifelineprocessList.add(frameLifelineprocessStr);
+							frameLifelineprocessStr = "[|{";
+							frameLifelineprocessList.add(frameLifelineprocessStr);
+							frameLifelineprocessStr = "f"+k+ "_b, f"+k+"_e" ;
+							frameLifelineprocessList.add(frameLifelineprocessStr);
+
+							for(int i=1 ; i< guardCount+1 ; i++){
+								frameLifelineprocessStr =  ", f"+k+"_alt"+i ;
+								frameLifelineprocessList.add(frameLifelineprocessStr);
 							}
 
-							numk++ ;
 
 
-						} else if (numk == interactionOperands.length-1) {
 
-							fragmentStr = "[]";
-							fragmentList.add(fragmentStr);
-							fragmentStr = "(f" + k + "_alt" + numG  ;
-							fragmentList.add(fragmentStr);
+							frameLifelineprocessStr = "}|]" ;
+							frameLifelineprocessList.add(frameLifelineprocessStr);
 
-							for (IMessage message : messages) {
-
-								if(message.getSource().toString().equals(lf)){
-									fragmentStr =  "->" ;
-									fragmentList.add(fragmentStr);
-									fragmentStr = "s_"+message ;
-									fragmentList.add(fragmentStr);
-								}else if(message.getTarget().toString().equals(lf)){
-									fragmentStr =  "->" ;
-									fragmentList.add(fragmentStr);
-									fragmentStr = "r_"+message ;
-									fragmentList.add(fragmentStr);
-								}
-
-								fragmentStr = "->f" + k + "_e->SKIP)"  + System.lineSeparator();
-								fragmentList.add(fragmentStr);
-
-
-							}
-
-							numk++ ;
-
-						} else {
-
-							fragmentStr = "[]";
-							fragmentList.add(fragmentStr);
-							fragmentStr = "(f" + k + "_alt" + numG ;
-							fragmentList.add(fragmentStr);
-
-							for (IMessage message : messages) {
-
-								if(message.getSource().toString().equals(lf)){
-									fragmentStr =  "->" ;
-									fragmentList.add(fragmentStr);
-									fragmentStr = "s_"+message ;
-									fragmentList.add(fragmentStr);
-								}else if(message.getTarget().toString().equals(lf)){
-									fragmentStr =  "->" ;
-									fragmentList.add(fragmentStr);
-									fragmentStr = "r_"+message ;
-									fragmentList.add(fragmentStr);
-								}
-
-								fragmentStr = "->f" + k + "_e->SKIP)" ;
-								fragmentList.add(fragmentStr);
-
-
-							}
-
-							numk++ ;
 						}
 
 
 
 
-					}
+
 				}
 			}
 
 
+			sumSQLifelineframeStr = zu + "I_" ;
+			sumSQLifelineframeList.add(sumSQLifelineframeStr);
+			for (String lf : line) {
+				sumSQLifelineframeStr = lf;
+				sumSQLifelineframeList.add(sumSQLifelineframeStr);
+
+			}
+			sumSQLifelineframeStr = " = " ;
+			sumSQLifelineframeList.add(sumSQLifelineframeStr);
+			for (String lf : line) {
+				if(lf.equals(line.get(line.size()-1))){
+					sumSQLifelineframeStr = lf;
+					sumSQLifelineframeList.add(sumSQLifelineframeStr);
+					sumSQLifelineframeStr = ")" ;
+					sumSQLifelineframeList.add(sumSQLifelineframeStr);
+
+				}else if(lf.equals(line.get(0))){
+					sumSQLifelineframeStr = lf;
+					sumSQLifelineframeList.add(sumSQLifelineframeStr);
+					sumSQLifelineframeStr = "[|{";
+					sumSQLifelineframeList.add(sumSQLifelineframeStr);
+
+					for(int k=1 ; k<numFrame+1 ; k++){
+
+						if(k == 1){
+							sumSQLifelineframeStr = "f"+k+"_b, f"+k+"_e" ;
+							sumSQLifelineframeList.add(sumSQLifelineframeStr);
+						}else{
+							sumSQLifelineframeStr = ", f"+k+"_b, f"+k+"_e" ;
+							sumSQLifelineframeList.add(sumSQLifelineframeStr);
+						}
+
+
+					}
+					sumSQLifelineframeStr = "}|]";
+					sumSQLifelineframeList.add(sumSQLifelineframeStr);
+
+				}else{
+					sumSQLifelineframeStr = "(" ;
+					sumSQLifelineframeList.add(sumSQLifelineframeStr);
+					sumSQLifelineframeStr = lf;
+					sumSQLifelineframeList.add(sumSQLifelineframeStr);
+					sumSQLifelineframeStr = "[|{";
+					sumSQLifelineframeList.add(sumSQLifelineframeStr);
+
+					for(int k=1 ; k<numFrame+1 ; k++){
+						if(k == 1){
+							sumSQLifelineframeStr = "f"+k+"_b, f"+k+"_e" ;
+							sumSQLifelineframeList.add(sumSQLifelineframeStr);
+						}else{
+							sumSQLifelineframeStr = ", f"+k+"_b, f"+k+"_e" ;
+							sumSQLifelineframeList.add(sumSQLifelineframeStr);
+						}
+
+					}
+					sumSQLifelineframeStr = "}|]";
+					sumSQLifelineframeList.add(sumSQLifelineframeStr);
+
+				}
+			}
+
+			totalSQforFrameStr = zu +"I = "+ zu + "I_" ;
+			totalSQforFrameList.add(totalSQforFrameStr);
+			for (String lf : line) {
+				totalSQforFrameStr = lf;
+				totalSQforFrameList.add(totalSQforFrameStr);
+
+			}
+
+			totalSQforFrameStr = "[|{" ;
+			totalSQforFrameList.add(totalSQforFrameStr);
+
+			for(int k=1 ; k<numFrame+1 ; k++){
+
+				if(k == 1){
+					totalSQforFrameStr = "f"+k+"_b, f"+k+"_e" ;
+					totalSQforFrameList.add(totalSQforFrameStr);
+				}else{
+					totalSQforFrameStr = ", f"+k+"_b, f"+k+"_e" ;
+					totalSQforFrameList.add(totalSQforFrameStr);
+				}
+
+
+			}
+
+			totalSQforFrameStr = "}|]" ;
+			totalSQforFrameList.add(totalSQforFrameStr);
+
+			for(int k=1 ; k<numFrame+1 ; k++){
+
+				if(numFrame < 2){
+					totalSQforFrameStr = "F"+k+"_" ;
+					totalSQforFrameList.add(totalSQforFrameStr);
+					for (String lf : line) {
+						totalSQforFrameStr = lf;
+						totalSQforFrameList.add(totalSQforFrameStr);
+
+					}
+				}else{
+
+					if(k == 1){
+						totalSQforFrameStr = "(F"+k+"_" ;
+						totalSQforFrameList.add(totalSQforFrameStr);
+						for (String lf : line) {
+							totalSQforFrameStr = lf;
+							totalSQforFrameList.add(totalSQforFrameStr);
+
+						}
+					}else if(k == numFrame){
+						totalSQforFrameStr = "|||"+"F"+k+"_" ;
+						totalSQforFrameList.add(totalSQforFrameStr);
+						for (String lf : line) {
+							totalSQforFrameStr = lf;
+							totalSQforFrameList.add(totalSQforFrameStr);
+
+						}
+
+						for(int j=1 ; j<numFrame ; j++){
+							totalSQforFrameStr = ")" ;
+							totalSQforFrameList.add(totalSQforFrameStr);
+						}
+
+					}else{
+
+						totalSQforFrameStr = "||| ("+k+"_" ;
+						totalSQforFrameList.add(totalSQforFrameStr);
+						for (String lf : line) {
+							totalSQforFrameStr = lf;
+							totalSQforFrameList.add(totalSQforFrameStr);
+
+						}
+
+					}
+
+				}
+
+			}
+
+
+
 		}
+
+
 
 
 
@@ -1098,9 +1446,9 @@ public class SqBuilder {
 	 */
 	private static void showMessages(IInteraction interaction) {
 
-		s1 = "Message start." + System.lineSeparator();
-		detail.add(s1);
-		System.out.println(s1);
+		detailStr = "Message start." + System.lineSeparator();
+		detailForInfo.add(detailStr);
+		System.out.println(detailStr);
 
 
 		IMessage[] messages = interaction.getMessages();
@@ -1108,52 +1456,43 @@ public class SqBuilder {
 		channelMessageList.add(channel);
 		for (IMessage message : messages) {
 
-            showmStr = message.toString().toUpperCase() + " = ";
-            showmList.add(showmStr);
-            showmStr = "s_"+ message.toString() +"->r_"+ message.toString() + "->"+message.toString().toUpperCase()+ System.lineSeparator()   ;
-            showmList.add(showmStr);
+            keepMessageStr = message.toString().toUpperCase() + " = ";
+            keepMessageList.add(keepMessageStr);
+            keepMessageStr = "s_"+ message.toString() +"->r_"+ message.toString() + "->"+message.toString().toUpperCase()+ System.lineSeparator()   ;
+            keepMessageList.add(keepMessageStr);
 
 			if (!first){
 				showMiniSeparator();
 				channelMessage = ", s"+ "_" + message.toString() ;
 				channelMessageList.add(channelMessage);
-                sumStr = "s"+ "_" + message.toString() ;
-                sumList.add(sumStr);
+                variableforconclusionStr = "s"+ "_" + message.toString() ;
+                variableforconclusionList.add(variableforconclusionStr);
 				channelMessage = ", " + "r"+ "_" + message.toString() ;
 				channelMessageList.add(channelMessage);
-                sumStr = "r"+ "_" + message.toString() ;
-                sumList.add(sumStr);
+                variableforconclusionStr = "r"+ "_" + message.toString() ;
+                variableforconclusionList.add(variableforconclusionStr);
 			}else{
-                sumStr = "s"+ "_" + message.toString() ;
-                sumList.add(sumStr);
+                variableforconclusionStr = "s"+ "_" + message.toString() ;
+                variableforconclusionList.add(variableforconclusionStr);
 				channelMessage = "s"+ "_" + message.toString() ;
 				channelMessageList.add(channelMessage);
 				channelMessage = ", " + "r"+ "_" + message.toString()+" " ;
 				channelMessageList.add(channelMessage);
-                sumStr = "r"+ "_" + message.toString() ;
-                sumList.add(sumStr);
+                variableforconclusionStr = "r"+ "_" + message.toString() ;
+                variableforconclusionList.add(variableforconclusionStr);
 			}
 
 			sequenceZuname[sequenceidx ] = zu;
 			sequenceZutype[sequenceidx ] = "Sequence Diagram";
 			showMessage(message,interaction);
 
-            mtStr = message.toString();
-            mtList.add(mtStr);
+            keepForMSGStr = message.toString();
+            keepForMSGList.add(keepForMSGStr);
 
 
 
 
-			if(message.toString() == IncludeMsStr){
-			    if(message.getSource().toString() == life){
-                     MsStr = "s_"+message.toString() ;
-                }else{
-                    MsStr = "r_"+message.toString() ;
-                }
 
-                MsList.add(MsStr);
-
-            }
 				
 			
 			
@@ -1162,60 +1501,64 @@ public class SqBuilder {
 
 			if( message.isCreateMessage())
 		    {
-				s1 = "[" + zu + "] Figure - [" + message + "]: Treated as asynchronous message" + System.lineSeparator();
-				detail.add(s1);
-				System.out.println(s1);
+				detailStr = "[" + zu + "] Figure - [" + message + "]: Treated as asynchronous message" + System.lineSeparator();
+				detailForInfo.add(detailStr);
+				System.out.println(detailStr);
 
 		    }
 			if( message.isDestroyMessage())
 		    {
-				s1 = "[" + zu + "] Figure - [" + message + "]: Treated as asynchronous message" + System.lineSeparator();
-				detail.add(s1);
-				System.out.println(s1);
+				detailStr = "[" + zu + "] Figure - [" + message + "]: Treated as asynchronous message" + System.lineSeparator();
+				detailForInfo.add(detailStr);
+				System.out.println(detailStr);
 
 
 		    }
 		}
 
-        mTotalStr = "MSG = " ;
-        mTotalList.add(mTotalStr);
-        if(mtList.size() > 2){
-            for (String lf : mtList) {
-                if(lf.equals(mtList.get(mtList.size()-1))){
-                    mTotalStr = lf.toUpperCase();
-                    mTotalList.add(mTotalStr);
-                    mTotalStr = ")" ;
-                    mTotalList.add(mTotalStr);
-                }else if(lf.equals(mtList.get(0))){
-                    mTotalStr = lf.toUpperCase();
-                    mTotalList.add(mTotalStr);
-                    mTotalStr = " ||| ";
-                    mTotalList.add(mTotalStr);
+        msgStr = "MSG = " ;
+        msgList.add(msgStr);
+        if(keepForMSGList.size() > 2){
+            for (String lf : keepForMSGList) {
+                if(lf.equals(keepForMSGList.get(keepForMSGList.size()-1))){
+                    msgStr = lf.toUpperCase();
+                    msgList.add(msgStr);
+
+					for(int i=1 ; i < keepForMSGList.size()-1 ; i++){
+						msgStr = ")" ;
+						msgList.add(msgStr);
+					}
+
+                }else if(lf.equals(keepForMSGList.get(0))){
+                    msgStr = lf.toUpperCase();
+                    msgList.add(msgStr);
+                    msgStr = " ||| ";
+                    msgList.add(msgStr);
                 }else{
-                    mTotalStr = "("+ lf.toUpperCase();
-                    mTotalList.add(mTotalStr);
-                    mTotalStr = " ||| ";
-                    mTotalList.add(mTotalStr);
+                    msgStr = "("+ lf.toUpperCase();
+                    msgList.add(msgStr);
+                    msgStr = " ||| ";
+                    msgList.add(msgStr);
                 }
             }
         }else{
-            for (String lf : mtList) {
-                if(lf.equals(mtList.get(mtList.size()-1))){
-                    mTotalStr = lf.toUpperCase();
-                    mTotalList.add(mTotalStr);
-                }else if(lf.equals(mtList.get(0))){
-                    mTotalStr = lf.toUpperCase();
-                    mTotalList.add(mTotalStr);
-                    mTotalStr = " ||| ";
-                    mTotalList.add(mTotalStr);
+            for (String lf : keepForMSGList) {
+                if(lf.equals(keepForMSGList.get(keepForMSGList.size()-1))){
+                    msgStr = lf.toUpperCase();
+                    msgList.add(msgStr);
+                }else if(lf.equals(keepForMSGList.get(0))){
+                    msgStr = lf.toUpperCase();
+                    msgList.add(msgStr);
+                    msgStr = " ||| ";
+                    msgList.add(msgStr);
                 }
             }
         }
 		showMiniSeparator();
 
-		s1 = "Message end." + System.lineSeparator();
-		detail.add(s1);
-		System.out.println(s1);
+		detailStr = "Message end." + System.lineSeparator();
+		detailForInfo.add(detailStr);
+		System.out.println(detailStr);
 
 
 
@@ -1231,9 +1574,9 @@ public class SqBuilder {
 	 */
 	private static void showMessage(IMessage message, IInteraction interaction) {
 
-		s1 = "message : " + message  + System.lineSeparator();
-		detail.add(s1);
-		System.out.println(s1);
+		detailStr = "message : " + message  + System.lineSeparator();
+		detailForInfo.add(detailStr);
+		System.out.println(detailStr);
 
 
         INamedElement source = message.getSource();
@@ -1243,18 +1586,18 @@ public class SqBuilder {
             //Add check null -----------
             if (use == null)
             {
-				s1 = "Sender = Frame"+ System.lineSeparator();
-				detail.add(s1);
-				System.out.println(s1);
+				detailStr = "Sender = Frame"+ System.lineSeparator();
+				detailForInfo.add(detailStr);
+				System.out.println(detailStr);
 
 
             }
             else
             {
 
-				s1 = "source(1) : " + use + System.lineSeparator(); // 「reference」name
-				detail.add(s1);
-				System.out.println(s1);
+				detailStr = "source(1) : " + use + System.lineSeparator(); // 「reference」name
+				detailForInfo.add(detailStr);
+				System.out.println(detailStr);
 
 	            sequenceSourcename[sequenceidx ] = use.toString();
 	            sequenceSourceref[sequenceidx ] = "ref";
@@ -1265,18 +1608,18 @@ public class SqBuilder {
             if (source == null)
             {
 
-				s1 = "source=null" + System.lineSeparator();
-				detail.add(s1);
-				System.out.println(s1);
+				detailStr = "source=null" + System.lineSeparator();
+				detailForInfo.add(detailStr);
+				System.out.println(detailStr);
 
 
             }
             else
             {
 
-				s1 = "source : " + source + System.lineSeparator();
-				detail.add(s1);
-				System.out.println(s1);
+				detailStr = "source : " + source + System.lineSeparator();
+				detailForInfo.add(detailStr);
+				System.out.println(detailStr);
 
 
 	            sequenceSourcename[sequenceidx ] = source.toString();
@@ -1287,27 +1630,27 @@ public class SqBuilder {
         if (target instanceof IGate) {
             IInteractionUse use = getInteractionUse(interaction, (IGate) target);
 
-			s1 = "target(1) : " + use + System.lineSeparator(); // 「reference」name
-			detail.add(s1);
-			System.out.println(s1);
+			detailStr = "target(1) : " + use + System.lineSeparator(); // 「reference」name
+			detailForInfo.add(detailStr);
+			System.out.println(detailStr);
 
             sequenceTargetname[sequenceidx ] = use.toString();
             sequenceTargetref[sequenceidx ] = "ref";
 
         } else {
 
-			s1 = "target(2) : " + target+ System.lineSeparator();
-			detail.add(s1);
-			System.out.println(s1);
+			detailStr = "target(2) : " + target+ System.lineSeparator();
+			detailForInfo.add(detailStr);
+			System.out.println(detailStr);
 
 
             sequenceTargetname[sequenceidx ] = target.toString();
         }
         String guard = message.getGuard();
 
-		s1 = "guard : " + guard + System.lineSeparator();
-		detail.add(s1);
-		System.out.println(s1);
+		detailStr = "guard : " + guard + System.lineSeparator();
+		detailForInfo.add(detailStr);
+		System.out.println(detailStr);
 
 
         sequenceGuard[sequenceidx ] = guard.toString();
@@ -1349,9 +1692,9 @@ public class SqBuilder {
 	private static void showIncludeMessagesInCombinedFragment(
 			ISequenceDiagram sequence) throws InvalidUsingException {
 		showSeparator();
-		s1 = "start show incluceMessages in combined fragment" + System.lineSeparator();
-		detail.add(s1);
-		System.out.println(s1);
+		detailStr = "start show incluceMessages in combined fragment" + System.lineSeparator();
+		detailForInfo.add(detailStr);
+		System.out.println(detailStr);
 
 
 		showMiniSeparator();
@@ -1375,19 +1718,20 @@ public class SqBuilder {
 			if(checkfst == true){
 				channelFrame = "f"+ k+"_b, ";
 				channelFrameList.add(channelFrame);
-				channelFrame = "f"+ k+"_e";
+				channelFrame ="f"+ k+"_e";
 				channelFrameList.add(channelFrame);
+				checkfst = false ;
 			}else{
 
-				channelFrame = ", f"+ k+"_b, ";
+				channelFrame =  ", f"+ k+"_b, ";
 				channelFrameList.add(channelFrame);
-				channelFrame = "f"+ k+"_e ";
+				channelFrame =  "f"+ k+"_e ";
 				channelFrameList.add(channelFrame);
 			}
 		}
 
 		for(int k=1 ; k<numFrame+1 ; k++){
-			for(int i=1 ; i< numG+1 ; i++){
+			for(int i=1 ; i< guardCount+1 ; i++){
 				channelFrame = ", f"+k+"_"+"alt"+ i ;
 				channelFrameList.add(channelFrame);
 
@@ -1403,13 +1747,12 @@ public class SqBuilder {
 				ILinkPresentation messagePresentation = (ILinkPresentation) presentation;
 				Point2D[] messagePoints = messagePresentation.getPoints();
 				if(containsTheMessage(combinedFragmentRectangle, messagePoints)){
-					s1 = "includes message : " + messagePresentation.getLabel() + System.lineSeparator();
-					detail.add(s1);
-					System.out.println(s1);
+					detailStr = "includes message : " + messagePresentation.getLabel() + System.lineSeparator();
+					detailForInfo.add(detailStr);
+					System.out.println(detailStr);
 
 
-					IncludeMsStr = messagePresentation.toString() ;
-                    IncludeMsList.add(IncludeMsStr);
+
 
 
 					

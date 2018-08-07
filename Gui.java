@@ -124,21 +124,21 @@ public class Gui extends JFrame {
         saveFileButton.setFont(new Font("Courier", Font.PLAIN,15));
 
         filechooser = new JFileChooser();
+
         label =new JLabel("File name");
         label.setFont(new Font("Courier", Font.BOLD,15));
         label.setForeground(Color.yellow);
 
         labelNameSaveFile =new JLabel("  Save File as");
-        labelNameSaveFile.setForeground(Color.yellow);
         labelNameSaveFile.setFont(new Font("Courier", Font.BOLD,15));
+        labelNameSaveFile.setForeground(Color.yellow);
+
 
         logo =new JLabel("Sequence Tool");
         logo.setForeground(Color.yellow);
         logo.setFont(new Font("Courier", Font.BOLD,40));
 
-        labelNameSaveFile =new JLabel("  Save File as");
-        labelNameSaveFile.setFont(new Font("Courier", Font.PLAIN,15));
-        labelNameSaveFile.setForeground(Color.yellow);
+
 
         inputSource = new JTextField(40);
         inputSource.setFont(new Font("Courier", Font.PLAIN,15));
@@ -225,7 +225,7 @@ public class Gui extends JFrame {
 
 
     public void initActionListener(){
-        ActionListener listener = new ReadStateDiagramListener();
+        ActionListener listener = new ReadDiagramListener();
         countButton.addActionListener(listener);
  //       ActionListener listener2 = new ClearButtonListener();
 //        clearButton.addActionListener(listener2);
@@ -245,7 +245,7 @@ public class Gui extends JFrame {
     }
 
 
-    public class ReadStateDiagramListener implements ActionListener {
+    public class ReadDiagramListener implements ActionListener {
         /**
          *  method to perform action when the button is pressed
          */
