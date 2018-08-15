@@ -153,6 +153,10 @@ public class SqBuilder {
 	// count guard in case alt
 	private static int guardCount = 0 ;
 
+	//chek loop
+	private static boolean loop = false ;
+	private static int numLoop = 0 ;
+
 
 	private static String temp = new String("")  ;
 
@@ -224,6 +228,8 @@ public class SqBuilder {
 		numFrame = 0;
 		state = true;
 		alt = false ;
+		loop = false ;
+		numLoop = 0 ;
 		
 		lifelineList = new ArrayList<String>();
 		line = new ArrayList<String>();
@@ -429,7 +435,8 @@ public class SqBuilder {
 		variableforconclusionList = new ArrayList<String>();
 		msgList = new ArrayList<String>();
 		keepForMSGList = new ArrayList<String>();
-
+		loop = false ;
+		numLoop = 0 ;
 
 		detailForInfo = new ArrayList<String>();
 
@@ -930,6 +937,97 @@ public class SqBuilder {
 
 
 
+					}else if(combinedFragment.isLoop()){
+
+						IInteractionOperand[] interactionOperands = combinedFragment.getInteractionOperands();
+						IMessage[] messages = null ;
+						countFrame ++;
+						insideFrameStr = "F" + countFrame + "_" + lifeline.toString() + " = f" + countFrame + "_b->F" + countFrame + "_" + lifeline.toString() + "_LOOP" + System.lineSeparator()+ "F" + countFrame + "_" + lifeline.toString() + "_LOOP" + " = ";
+						insideFrameList.add(insideFrameStr);
+
+						for (IInteractionOperand interactionOperand : interactionOperands) {
+							if(interactionOperand.getGuard() != null){
+								gCount++;
+							}
+
+
+							messages = interactionOperand.getMessages();
+
+							if (checkStart == 0) {
+								insideFrameStr = "(f" + countFrame + "_loop" + gCount ;
+								insideFrameList.add(insideFrameStr);
+								for (IMessage message : messages) {
+									if(message.getSource().toString().equals(lifeline.toString())){
+										insideFrameStr =  "->" ;
+										insideFrameList.add(insideFrameStr);
+										insideFrameStr =  "s_"+ message ;
+										insideFrameList.add(insideFrameStr);
+
+									}else if(message.getTarget().toString().equals(lifeline.toString())){
+										insideFrameStr =  "->" ;
+										insideFrameList.add(insideFrameStr);
+										insideFrameStr =  "r_"+ message ;
+										insideFrameList.add(insideFrameStr);
+
+									}
+								}
+								checkStart++;
+							}else if (checkStart == interactionOperands.length-1) {
+								insideFrameStr = "[]" ;
+								insideFrameList.add(insideFrameStr);
+								insideFrameStr = "(f" + countFrame + "_loop" + gCount ;
+								insideFrameList.add(insideFrameStr);
+								for (IMessage message : messages) {
+									if(message.getSource().toString().equals(lifeline.toString())){
+										insideFrameStr =  "->" ;
+										insideFrameList.add(insideFrameStr);
+										insideFrameStr =  "s_"+ message ;
+										insideFrameList.add(insideFrameStr);
+
+									}else if(message.getTarget().toString().equals(lifeline.toString())){
+										insideFrameStr =  "->" ;
+										insideFrameList.add(insideFrameStr);
+										insideFrameStr =  "r_"+ message ;
+										insideFrameList.add(insideFrameStr);
+
+									}
+//									insideFrameStr = "->f" + countFrame + "_e->SKIP)" +System.lineSeparator();
+//									insideFrameList.add(insideFrameStr);
+								}
+								checkStart = 0 ;
+
+							}else{
+								insideFrameStr = "(f" + countFrame + "_loop" + gCount ;
+								insideFrameList.add(insideFrameStr);
+								for (IMessage message : messages) {
+									if(message.getSource().toString().equals(lifeline.toString())){
+										insideFrameStr =  "->" ;
+										insideFrameList.add(insideFrameStr);
+										insideFrameStr =  "s_"+ message ;
+										insideFrameList.add(insideFrameStr);
+
+									}else if(message.getTarget().toString().equals(lifeline.toString())){
+										insideFrameStr =  "->" ;
+										insideFrameList.add(insideFrameStr);
+										insideFrameStr =  "r_"+ message ;
+										insideFrameList.add(insideFrameStr);
+
+									}
+
+								}
+								checkStart++;
+							}
+
+
+
+
+
+
+						}
+
+						insideFrameStr = "->F" + countFrame + "_" + lifeline.toString() + "_LOOP)[](" + "f" + countFrame + "_e->F"+ countFrame+ "_" + lifeline.toString() +")" +System.lineSeparator() ;
+						insideFrameList.add(insideFrameStr);
+
 					}
 
 				}
@@ -1088,6 +1186,10 @@ public class SqBuilder {
 			errmsg[erridx] = "[" + zu + "] Figure - [Loop] - [" + life + "] lifeline: composite fragment not available";
 	    	erridx++;
 			err = "1";
+			loop = true ;
+			numLoop++ ;
+
+
 		}
 
 		detailStr = "isNeg() : " + combinedFragment.isNeg() + System.lineSeparator();
@@ -1138,6 +1240,12 @@ public class SqBuilder {
 				if(interactionOperand.getGuard() != null){
 					guardCount++;
 				}
+			}else if(loop == true && numLoop > 1 && numLoop == line.size()){
+
+					if(interactionOperand.getGuard() != null){
+						guardCount++;
+					}
+
 			}
 
 
@@ -1191,6 +1299,32 @@ public class SqBuilder {
 
 		boolean checkVariable = true ;
 		if(alt == true && numAlt > 1 && numAlt == line.size()){
+
+			boolean checkfst = true ;
+			for(int k=1 ; k<numFrame+1 ; k++){
+				if(checkfst == true){
+					channelFrame = "f"+ k+"_b, ";
+					channelFrameList.add(channelFrame);
+					channelFrame ="f"+ k+"_e";
+					channelFrameList.add(channelFrame);
+					checkfst = false ;
+				}else{
+
+					channelFrame =  ", f"+ k+"_b, ";
+					channelFrameList.add(channelFrame);
+					channelFrame =  "f"+ k+"_e ";
+					channelFrameList.add(channelFrame);
+				}
+			}
+
+			for(int k=1 ; k<numFrame+1 ; k++){
+				for(int i=1 ; i< guardCount+1 ; i++){
+					channelFrame = ", f"+k+"_"+"alt"+ i ;
+					channelFrameList.add(channelFrame);
+
+				}
+			}
+
 			for(int k=1 ; k<numFrame+1 ; k++){
 				if( checkVariable == true){
 					channelFrame = "f"+ k+"_b, ";
@@ -1429,6 +1563,295 @@ public class SqBuilder {
 				}
 
 			}
+
+
+
+
+
+		}else if(loop == true && numLoop > 1 && numLoop == line.size()){
+
+			boolean checkfst = true ;
+			for(int k=1 ; k<numFrame+1 ; k++){
+				if(checkfst == true){
+					channelFrame = "f"+ k+"_b, ";
+					channelFrameList.add(channelFrame);
+					channelFrame ="f"+ k+"_e";
+					channelFrameList.add(channelFrame);
+					checkfst = false ;
+				}else{
+
+					channelFrame =  ", f"+ k+"_b, ";
+					channelFrameList.add(channelFrame);
+					channelFrame =  "f"+ k+"_e ";
+					channelFrameList.add(channelFrame);
+				}
+			}
+
+			for(int k=1 ; k<numFrame+1 ; k++){
+				for(int i=1 ; i< guardCount+1 ; i++){
+					channelFrame = ", f"+k+"_"+"loop"+ i ;
+					channelFrameList.add(channelFrame);
+
+				}
+			}
+
+			for(int k=1 ; k<numFrame+1 ; k++){
+				if( checkVariable == true){
+					channelFrame = "f"+ k+"_b, ";
+					variableframeList.add(channelFrame);
+					channelFrame = "f"+ k+"_e";
+					variableframeList.add(channelFrame);
+				}else{
+
+					channelFrame = ", f"+ k+"_b, ";
+					variableframeList.add(channelFrame);
+					channelFrame = "f"+ k+"_e ";
+					variableframeList.add(channelFrame);
+				}
+			}
+
+			for(int k=1 ; k<numFrame+1 ; k++){
+				for(int i=1 ; i< guardCount+1 ; i++){
+					channelFrame = ", f"+k+"_"+"loop"+ i ;
+					variableframeList.add(channelFrame);
+
+				}
+			}
+
+			for(int k=1 ; k<numFrame+1 ; k++){
+				frameLifelineprocessStr = "F"+k+"_" ;
+				frameLifelineprocessList.add(frameLifelineprocessStr);
+				for (String lf : line) {
+					frameLifelineprocessStr = lf;
+					frameLifelineprocessList.add(frameLifelineprocessStr);
+
+				}
+				frameLifelineprocessStr = " = " ;
+				frameLifelineprocessList.add(frameLifelineprocessStr);
+				for (String lf : line) {
+
+
+
+					if(lf.equals(line.get(line.size()-1))){
+
+						if(line.size()>2){
+							frameLifelineprocessStr = "F"+k+"_" + lf;
+							frameLifelineprocessList.add(frameLifelineprocessStr);
+							frameLifelineprocessStr = ")"  + System.lineSeparator();
+							frameLifelineprocessList.add(frameLifelineprocessStr);
+						}else{
+							frameLifelineprocessStr = "F"+k+"_" + lf;
+							frameLifelineprocessList.add(frameLifelineprocessStr);
+
+						}
+
+
+					}else if(lf.equals(line.get(0))){
+						frameLifelineprocessStr = "F"+k+"_" + lf;
+						frameLifelineprocessList.add(frameLifelineprocessStr);
+						frameLifelineprocessStr = "[|{";
+						frameLifelineprocessList.add(frameLifelineprocessStr);
+						frameLifelineprocessStr = "f"+k+ "_b, f"+k+"_e" ;
+						frameLifelineprocessList.add(frameLifelineprocessStr);
+						for(int i=1 ; i< guardCount+1 ; i++){
+							frameLifelineprocessStr =  ", f"+k+"_loop"+i ;
+							frameLifelineprocessList.add(frameLifelineprocessStr);
+						}
+
+
+//						for(int i=0 ; i< variableframeList.size() ; i++){
+//
+//							frameLifelineprocessStr = variableframeList.get(i) ;
+//							frameLifelineprocessList.add(frameLifelineprocessStr);
+//
+//						}
+
+
+
+
+						frameLifelineprocessStr = "}|]";
+						frameLifelineprocessList.add(frameLifelineprocessStr);
+
+
+					}else{
+						frameLifelineprocessStr = "(" ;
+						frameLifelineprocessList.add(frameLifelineprocessStr);
+						frameLifelineprocessStr =  "F"+k+"_" + lf;
+						frameLifelineprocessList.add(frameLifelineprocessStr);
+						frameLifelineprocessStr = "[|{";
+						frameLifelineprocessList.add(frameLifelineprocessStr);
+						frameLifelineprocessStr = "f"+k+ "_b, f"+k+"_e" ;
+						frameLifelineprocessList.add(frameLifelineprocessStr);
+
+						for(int i=1 ; i< guardCount+1 ; i++){
+							frameLifelineprocessStr =  ", f"+k+"_loop"+i ;
+							frameLifelineprocessList.add(frameLifelineprocessStr);
+						}
+
+
+
+
+						frameLifelineprocessStr = "}|]" ;
+						frameLifelineprocessList.add(frameLifelineprocessStr);
+
+					}
+
+
+
+
+
+				}
+			}
+
+
+			sumSQLifelineframeStr = zu + "I_" ;
+			sumSQLifelineframeList.add(sumSQLifelineframeStr);
+			for (String lf : line) {
+				sumSQLifelineframeStr = lf;
+				sumSQLifelineframeList.add(sumSQLifelineframeStr);
+
+			}
+			sumSQLifelineframeStr = " = " ;
+			sumSQLifelineframeList.add(sumSQLifelineframeStr);
+			for (String lf : line) {
+				if(lf.equals(line.get(line.size()-1))){
+					if(line.size()>2){
+						sumSQLifelineframeStr = lf;
+						sumSQLifelineframeList.add(sumSQLifelineframeStr);
+						sumSQLifelineframeStr = ")" ;
+						sumSQLifelineframeList.add(sumSQLifelineframeStr);
+
+					}else{
+						sumSQLifelineframeStr = lf;
+						sumSQLifelineframeList.add(sumSQLifelineframeStr);
+
+					}
+
+
+				}else if(lf.equals(line.get(0))){
+					sumSQLifelineframeStr = lf;
+					sumSQLifelineframeList.add(sumSQLifelineframeStr);
+					sumSQLifelineframeStr = "[|{";
+					sumSQLifelineframeList.add(sumSQLifelineframeStr);
+
+					for(int k=1 ; k<numFrame+1 ; k++){
+
+						if(k == 1){
+							sumSQLifelineframeStr = "f"+k+"_b, f"+k+"_e" ;
+							sumSQLifelineframeList.add(sumSQLifelineframeStr);
+						}else{
+							sumSQLifelineframeStr = ", f"+k+"_b, f"+k+"_e" ;
+							sumSQLifelineframeList.add(sumSQLifelineframeStr);
+						}
+
+
+					}
+					sumSQLifelineframeStr = "}|]";
+					sumSQLifelineframeList.add(sumSQLifelineframeStr);
+
+				}else{
+					sumSQLifelineframeStr = "(" ;
+					sumSQLifelineframeList.add(sumSQLifelineframeStr);
+					sumSQLifelineframeStr = lf;
+					sumSQLifelineframeList.add(sumSQLifelineframeStr);
+					sumSQLifelineframeStr = "[|{";
+					sumSQLifelineframeList.add(sumSQLifelineframeStr);
+
+					for(int k=1 ; k<numFrame+1 ; k++){
+						if(k == 1){
+							sumSQLifelineframeStr = "f"+k+"_b, f"+k+"_e" ;
+							sumSQLifelineframeList.add(sumSQLifelineframeStr);
+						}else{
+							sumSQLifelineframeStr = ", f"+k+"_b, f"+k+"_e" ;
+							sumSQLifelineframeList.add(sumSQLifelineframeStr);
+						}
+
+					}
+					sumSQLifelineframeStr = "}|]";
+					sumSQLifelineframeList.add(sumSQLifelineframeStr);
+
+				}
+			}
+
+			totalSQforFrameStr = zu +"I = "+ zu + "I_" ;
+			totalSQforFrameList.add(totalSQforFrameStr);
+			for (String lf : line) {
+				totalSQforFrameStr = lf;
+				totalSQforFrameList.add(totalSQforFrameStr);
+
+			}
+
+			totalSQforFrameStr = "[|{" ;
+			totalSQforFrameList.add(totalSQforFrameStr);
+
+			for(int k=1 ; k<numFrame+1 ; k++){
+
+				if(k == 1){
+					totalSQforFrameStr = "f"+k+"_b, f"+k+"_e" ;
+					totalSQforFrameList.add(totalSQforFrameStr);
+				}else{
+					totalSQforFrameStr = ", f"+k+"_b, f"+k+"_e" ;
+					totalSQforFrameList.add(totalSQforFrameStr);
+				}
+
+
+			}
+
+			totalSQforFrameStr = "}|]" ;
+			totalSQforFrameList.add(totalSQforFrameStr);
+
+			for(int k=1 ; k<numFrame+1 ; k++){
+
+				if(numFrame < 2){
+					totalSQforFrameStr = "F"+k+"_" ;
+					totalSQforFrameList.add(totalSQforFrameStr);
+					for (String lf : line) {
+						totalSQforFrameStr = lf;
+						totalSQforFrameList.add(totalSQforFrameStr);
+
+					}
+				}else{
+
+					if(k == 1){
+						totalSQforFrameStr = "(F"+k+"_" ;
+						totalSQforFrameList.add(totalSQforFrameStr);
+						for (String lf : line) {
+							totalSQforFrameStr = lf;
+							totalSQforFrameList.add(totalSQforFrameStr);
+
+						}
+					}else if(k == numFrame){
+						totalSQforFrameStr = "|||"+"F"+k+"_" ;
+						totalSQforFrameList.add(totalSQforFrameStr);
+						for (String lf : line) {
+							totalSQforFrameStr = lf;
+							totalSQforFrameList.add(totalSQforFrameStr);
+
+						}
+
+						for(int j=1 ; j<numFrame ; j++){
+							totalSQforFrameStr = ")" ;
+							totalSQforFrameList.add(totalSQforFrameStr);
+						}
+
+					}else{
+
+						totalSQforFrameStr = "||| ("+k+"_" ;
+						totalSQforFrameList.add(totalSQforFrameStr);
+						for (String lf : line) {
+							totalSQforFrameStr = lf;
+							totalSQforFrameList.add(totalSQforFrameStr);
+
+						}
+
+					}
+
+				}
+
+			}
+
+
+
 
 
 
@@ -1713,30 +2136,9 @@ public class SqBuilder {
 
 
 
-		boolean checkfst = true ;
-		for(int k=1 ; k<numFrame+1 ; k++){
-			if(checkfst == true){
-				channelFrame = "f"+ k+"_b, ";
-				channelFrameList.add(channelFrame);
-				channelFrame ="f"+ k+"_e";
-				channelFrameList.add(channelFrame);
-				checkfst = false ;
-			}else{
 
-				channelFrame =  ", f"+ k+"_b, ";
-				channelFrameList.add(channelFrame);
-				channelFrame =  "f"+ k+"_e ";
-				channelFrameList.add(channelFrame);
-			}
-		}
 
-		for(int k=1 ; k<numFrame+1 ; k++){
-			for(int i=1 ; i< guardCount+1 ; i++){
-				channelFrame = ", f"+k+"_"+"alt"+ i ;
-				channelFrameList.add(channelFrame);
 
-			}
-		}
 
 
 

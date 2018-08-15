@@ -1,0 +1,38 @@
+channel s_a, r_a , s_b, r_b, s_c, r_c, s_e, r_e, s_f, r_f, s_d, r_d
+channel f1_b, f1_e, f2_b, f2_e , f1_alt1, f1_alt2, f2_alt1, f2_alt2
+                  
+M1 = s_a->f1_b->f1_e->f2_b->f2_e->s_d->SKIP
+M2 = r_a->f1_b->f1_e->f2_b->f2_e->r_d->SKIP
+M3 = f1_b->f1_e->f2_b->f2_e->SKIP
+
+                  
+F1_M1 = f1_b->F1_M1_ALT
+F1_M1_ALT = (f1_alt1->s_b->f1_e->SKIP)[](f1_alt2->f1_e->SKIP)
+F2_M1 = f2_b->F2_M1_ALT
+F2_M1_ALT = (f2_alt1->f2_e->SKIP)[](f2_alt2->s_f->f2_e->SKIP)
+F1_M2 = f1_b->F1_M2_ALT
+F1_M2_ALT = (f1_alt1->r_b->f1_e->SKIP)[](f1_alt2->s_c->f1_e->SKIP)
+F2_M2 = f2_b->F2_M2_ALT
+F2_M2_ALT = (f2_alt1->s_e->f2_e->SKIP)[](f2_alt2->r_f->f2_e->SKIP)
+F1_M3 = f1_b->F1_M3_ALT
+F1_M3_ALT = (f1_alt1->f1_e->SKIP)[](f1_alt2->r_c->f1_e->SKIP)
+F2_M3 = f2_b->F2_M3_ALT
+F2_M3_ALT = (f2_alt1->r_e->f2_e->SKIP)[](f2_alt2->f2_e->SKIP)
+
+                  
+A = s_a->r_a->A
+B = s_b->r_b->B
+C = s_c->r_c->C
+E = s_e->r_e->E
+F = s_f->r_f->F
+D = s_d->r_d->D
+
+MSG = A ||| (B ||| (C ||| (E ||| (F ||| D))))
+                  
+SQ_alt3I_M1M2M3 = M1[|{f1_b, f1_e, f2_b, f2_e}|](M2[|{f1_b, f1_e, f2_b, f2_e}|]M3)
+F1_M1M2M3 = F1_M1[|{f1_b, f1_e, f1_alt1, f1_alt2}|](F1_M2[|{f1_b, f1_e, f1_alt1, f1_alt2}|]F1_M3)
+F2_M1M2M3 = F2_M1[|{f2_b, f2_e, f2_alt1, f2_alt2}|](F2_M2[|{f2_b, f2_e, f2_alt1, f2_alt2}|]F2_M3)
+
+SQ_alt3I = SQ_alt3I_M1M2M3[|{f1_b, f1_e, f2_b, f2_e}|](F1_M1M2M3|||F2_M1M2M3)
+                  
+SQ_alt3 = SQ_alt3I[|{s_a,r_a,s_b,r_b,s_c,r_c,s_e,r_e,s_f,r_f,s_d,r_d}|]MSG

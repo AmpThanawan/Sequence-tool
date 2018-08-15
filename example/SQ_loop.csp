@@ -1,0 +1,25 @@
+channel s_a, r_a , s_b, r_b, s_c, r_c, s_d, r_d
+channel f1_b, f1_e, f1_loop1
+                  
+M1 = s_a->f1_b->f1_e->s_d->SKIP
+M2 = r_a->f1_b->f1_e->r_d->SKIP
+
+                  
+F1_M1 = f1_b->F1_M1_LOOP
+F1_M1_LOOP = (f1_loop1->s_b->s_c->F1_M1_LOOP)[](f1_e->F1_M1)
+F1_M2 = f1_b->F1_M2_LOOP
+F1_M2_LOOP = (f1_loop1->r_b->r_c->F1_M2_LOOP)[](f1_e->F1_M2)
+
+                  
+A = s_a->r_a->A
+B = s_b->r_b->B
+C = s_c->r_c->C
+D = s_d->r_d->D
+
+MSG = A ||| (B ||| (C ||| D))
+                  
+SQ_loopI_M1M2 = M1[|{f1_b, f1_e}|]M2
+F1_M1M2 = F1_M1[|{f1_b, f1_e, f1_loop1}|]F1_M2
+SQ_loopI = SQ_loopI_M1M2[|{f1_b, f1_e}|]F1_M1M2
+                  
+SQ_loop = SQ_loopI[|{s_a,r_a,s_b,r_b,s_c,r_c,s_d,r_d}|]MSG
